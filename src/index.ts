@@ -19,7 +19,6 @@ interface IAddigyConfig {
   clientSecret: string
 }
 
-
 class Addigy {
   config: IAddigyConfig
   domain: string
@@ -84,7 +83,6 @@ class Addigy {
     }
   }
 
-
   //
   // Devices
   //
@@ -127,8 +125,8 @@ class Addigy {
 
   async updateDevicePolicy (policy_id: string, agent_id: string): Promise<object[]> {
     let postBody: any = {
-      policy_id: policy_id,
-      agent_id: agent_id
+      'policy_id': policy_id,
+      'agent_id': agent_id
     }
 
     try {
@@ -152,15 +150,13 @@ class Addigy {
     }
   }
 
-
-
   //
   // Alerts
   //
 
   async getAlerts (status: AlertStatus, page: number = 1, per_page: number = 10): Promise<object[]> {
     let status_uri = ''
-    if(status !== undefined) {
+    if (status !== undefined) {
       status_uri = `&status=${status}`
     }
 
@@ -174,8 +170,6 @@ class Addigy {
       throw err
     }
   }
-
-
 
   //
   // Policies
@@ -210,15 +204,15 @@ class Addigy {
       name: name
     }
 
-    if(icon !== undefined) {
+    if (icon !== undefined) {
       postBody['icon'] = icon
     }
 
-    if(color !== undefined) {
+    if (color !== undefined) {
       postBody['color'] = color
     }
 
-    if(parent_id !== undefined) {
+    if (parent_id !== undefined) {
       postBody['parent_id'] = parent_id
     }
 
@@ -226,7 +220,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/policies?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         {
-          //headers: this.reqHeaders,
           method: 'POST',
           form: true,
           body: postBody
@@ -237,8 +230,6 @@ class Addigy {
       throw err
     }
   }
-
-
 
   //
   // Maintenance
@@ -256,7 +247,6 @@ class Addigy {
     }
   }
 
-
   //
   // Applications
   //
@@ -273,16 +263,13 @@ class Addigy {
     }
   }
 
-
-
-
   //
   // Profiles
   //
 
   async getProfiles (instruction_id?: string): Promise<object[]> {
     let instruction_uri = ''
-    if(instruction_id !== undefined) {
+    if (instruction_id !== undefined) {
       instruction_id = `&instruction_id=${instruction_id}`
     }
 
@@ -297,17 +284,116 @@ class Addigy {
     }
   }
 
-  // TODO: createProfile()
-  // TODO: updateProfile()
-  // TODO: deleteProfile()
+  async createProfile (name: string, payloads: object[]): Promise<object[]> {
+    let postBody: any = {
+      'name': name,
+      'payloads': payloads
+    }
 
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/profiles`,
+        {
+          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
+  async updateProfile (instruction_id: string, payloads: object[]): Promise<object[]> {
+    let postBody: any = {
+      'instruction_id': instruction_id,
+      'payloads': payloads
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/profiles`,
+        {
+          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'PUT',
+          json: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async deleteProfile (instruction_id: string): Promise<object[]> {
+    let postBody: any = {
+      'instruction_id': instruction_id
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/profiles`,
+        {
+          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'DELETE',
+          json: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
   //
   // Commands
   //
 
-  // TODO: runCommand()
+  async runCommand (agent_ids: string[], command: string): Promise<object[]> {
+    let postBody: any = {
+      'agent_ids': agent_ids,
+      'command': command
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/devices/commands`,
+        {
+          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
   async getCommandOutput (action_id: string, agent_id: string): Promise<object[]> {
     try {
@@ -320,7 +406,6 @@ class Addigy {
       throw err
     }
   }
-
 
   //
   // Public Software
@@ -337,7 +422,6 @@ class Addigy {
       throw err
     }
   }
-
 
   //
   // Custom Software
