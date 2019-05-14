@@ -1,9 +1,15 @@
 import got from 'got'
 import qs from 'query-string'
 
+enum AlertStatus {
+    Acknowledged = 'Acknowledged',
+    Resolved = 'Resolved',
+    Unattended = 'Unattended'
+}
+
 /**
  * The Config for the Addigy class
- *
+ * description of a thing
  * @export
  * @interface IAddigyConfig
  */
@@ -12,6 +18,7 @@ interface IAddigyConfig {
   clientId: string
   clientSecret: string
 }
+
 
 class Addigy {
   config: IAddigyConfig
@@ -43,8 +50,39 @@ class Addigy {
     }
   }
 
-  // TODO: createPolicyInstruction()
-  // TODO: deletePolicyInstruction()
+  async createPolicyInstructions (policy_id: string, instruction_id: string): Promise<object[]> {
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        {
+          headers: this.reqHeaders,
+          method: 'POST',
+          body: JSON.stringify({
+            instruction_id: instruction_id,
+            policy_id: policy_id
+          })
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async deletePolicyInstructions (policy_id: string, instruction_id: string, provider: string = 'ansible-profile'): Promise<object[]> {
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policy_id}&instruction_id=${instruction_id}&provider=${provider}`,
+        {
+          headers: this.reqHeaders,
+          method: 'DELETE'
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
 
   //
@@ -87,7 +125,32 @@ class Addigy {
     }
   }
 
-  //TODO: createPolicyDevice()
+  async updateDevicePolicy (policy_id: string, agent_id: string): Promise<object[]> {
+    let postBody: any = {
+      policy_id: policy_id,
+      agent_id: agent_id
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/policies/devices`,
+        {
+          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'POST',
+          form: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
 
 
@@ -95,11 +158,15 @@ class Addigy {
   // Alerts
   //
 
-  // TODO: Create ENUM for status
-  async getAlerts (status: string, page: number = 1, per_page: number = 10): Promise<object[]> {
+  async getAlerts (status: AlertStatus, page: number = 1, per_page: number = 10): Promise<object[]> {
+    let status_uri = ''
+    if(status !== undefined) {
+      status_uri = `&status=${status}`
+    }
+
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&status=${status}&page=${page}&per_page=${per_page}`,
+        `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${per_page}` + status_uri,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -138,7 +205,38 @@ class Addigy {
     }
   }
 
-  // TODO: createPolicy()
+  async createPolicy (name: string, parent_id?: string, icon?: string, color?: string): Promise<object[]> {
+    let postBody: any = {
+      name: name
+    }
+
+    if(icon !== undefined) {
+      postBody['icon'] = icon
+    }
+
+    if(color !== undefined) {
+      postBody['color'] = color
+    }
+
+    if(parent_id !== undefined) {
+      postBody['parent_id'] = parent_id
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/policies?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        {
+          //headers: this.reqHeaders,
+          method: 'POST',
+          form: true,
+          body: postBody
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
 
 
