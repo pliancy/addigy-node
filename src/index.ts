@@ -1,5 +1,4 @@
 import got from 'got'
-import qs from 'query-string'
 
 enum AlertStatus {
     Acknowledged = 'Acknowledged',
