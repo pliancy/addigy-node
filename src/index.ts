@@ -37,10 +37,10 @@ class Addigy {
   // Instructions
   //
 
-  async getPolicyInstructions (policy_id: string, provider: string = 'ansible-profile'): Promise<object[]> {
+  async getPolicyInstructions (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policy_id}`,
+        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -49,7 +49,7 @@ class Addigy {
     }
   }
 
-  async createPolicyInstructions (policy_id: string, instruction_id: string): Promise<object[]> {
+  async createPolicyInstructions (policyId: string, instructionId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
         `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
@@ -57,8 +57,8 @@ class Addigy {
           headers: this.reqHeaders,
           method: 'POST',
           body: JSON.stringify({
-            instruction_id: instruction_id,
-            policy_id: policy_id
+            instruction_id: instructionId,
+            policy_id: policyId
           })
         }
       )
@@ -68,10 +68,10 @@ class Addigy {
     }
   }
 
-  async deletePolicyInstructions (policy_id: string, instruction_id: string, provider: string = 'ansible-profile'): Promise<object[]> {
+  async deletePolicyInstructions (policyId: string, instructionId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policy_id}&instruction_id=${instruction_id}&provider=${provider}`,
+        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policyId}&instruction_id=${instructionId}&provider=${provider}`,
         {
           headers: this.reqHeaders,
           method: 'DELETE'
@@ -111,10 +111,10 @@ class Addigy {
     }
   }
 
-  async getPolicyDevices (policy_id: string): Promise<object[]> {
+  async getPolicyDevices (policyId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policy_id}`,
+        `${this.domain}/policies/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -123,10 +123,10 @@ class Addigy {
     }
   }
 
-  async updateDevicePolicy (policy_id: string, agent_id: string): Promise<object[]> {
+  async updateDevicePolicy (policyId: string, agentId: string): Promise<object[]> {
     let postBody: any = {
-      'policy_id': policy_id,
-      'agent_id': agent_id
+      'policy_id': policyId,
+      'agent_id': agentId
     }
 
     try {
@@ -154,15 +154,15 @@ class Addigy {
   // Alerts
   //
 
-  async getAlerts (status: AlertStatus, page: number = 1, per_page: number = 10): Promise<object[]> {
-    let status_uri = ''
-    if (status !== undefined) {
-      status_uri = `&status=${status}`
+  async getAlerts (status: AlertStatus, page: number = 1, pageLength: number = 10): Promise<object[]> {
+    let statusUri = ''
+    if (status) {
+      statusUri = `&status=${status}`
     }
 
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${per_page}` + status_uri,
+        `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLength}` + statusUri,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -187,10 +187,10 @@ class Addigy {
     }
   }
 
-  async getPolicyDetails (policy_id: string, provider: string = 'ansible-profile'): Promise<object[]> {
+  async getPolicyDetails (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/details?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policy_id}`,
+        `${this.domain}/policies/details?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -199,7 +199,7 @@ class Addigy {
     }
   }
 
-  async createPolicy (name: string, parent_id?: string, icon?: string, color?: string): Promise<object[]> {
+  async createPolicy (name: string, parentId?: string, icon?: string, color?: string): Promise<object[]> {
     let postBody: any = {
       name: name
     }
@@ -212,8 +212,8 @@ class Addigy {
       postBody['color'] = color
     }
 
-    if (parent_id !== undefined) {
-      postBody['parent_id'] = parent_id
+    if (parentId !== undefined) {
+      postBody['parent_id'] = parentId
     }
 
     try {
@@ -235,10 +235,10 @@ class Addigy {
   // Maintenance
   //
 
-  async getMaintenance (page: number = 1, per_page: number = 10): Promise<object[]> {
+  async getMaintenance (page: number = 1, pageLenth: number = 10): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/maintenance?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${per_page}`,
+        `${this.domain}/maintenance?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLenth}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -267,15 +267,15 @@ class Addigy {
   // Profiles
   //
 
-  async getProfiles (instruction_id?: string): Promise<object[]> {
-    let instruction_uri = ''
-    if (instruction_id !== undefined) {
-      instruction_id = `&instruction_id=${instruction_id}`
+  async getProfiles (instructionId?: string): Promise<object[]> {
+    let instructionUri = ''
+    if (instructionId !== undefined) {
+      instructionUri = `&instruction_id=${instructionId}`
     }
 
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/profiles?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}` + instruction_uri,
+        `${this.domain}/profiles?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}` + instructionUri,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -311,9 +311,9 @@ class Addigy {
     }
   }
 
-  async updateProfile (instruction_id: string, payloads: object[]): Promise<object[]> {
+  async updateProfile (instructionId: string, payloads: object[]): Promise<object[]> {
     let postBody: any = {
-      'instruction_id': instruction_id,
+      'instruction_id': instructionId,
       'payloads': payloads
     }
 
@@ -338,9 +338,9 @@ class Addigy {
     }
   }
 
-  async deleteProfile (instruction_id: string): Promise<object[]> {
+  async deleteProfile (instructionId: string): Promise<object[]> {
     let postBody: any = {
-      'instruction_id': instruction_id
+      'instruction_id': instructionId
     }
 
     try {
@@ -368,9 +368,9 @@ class Addigy {
   // Commands
   //
 
-  async runCommand (agent_ids: string[], command: string): Promise<object[]> {
+  async runCommand (agentIds: string[], command: string): Promise<object[]> {
     let postBody: any = {
-      'agent_ids': agent_ids,
+      'agent_ids': agentIds,
       'command': command
     }
 
@@ -395,10 +395,10 @@ class Addigy {
     }
   }
 
-  async getCommandOutput (action_id: string, agent_id: string): Promise<object[]> {
+  async getCommandOutput (actionId: string, agentId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/devices/output?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&action_id=${action_id}&agentid=${agent_id}`,
+        `${this.domain}/devices/output?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&action_id=${actionId}&agentid=${agentId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -439,10 +439,10 @@ class Addigy {
     }
   }
 
-  async getCustomSoftwareAllVersions (software_id: string): Promise<object[]> {
+  async getCustomSoftwareAllVersions (softwareId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}$identifier=${software_id}`,
+        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}$identifier=${softwareId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -451,10 +451,10 @@ class Addigy {
     }
   }
 
-  async getCustomSoftwareSpecificVersion (instruction_id: string): Promise<object[]> {
+  async getCustomSoftwareSpecificVersion (instructionId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&instructionid=${instruction_id}`,
+        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&instructionid=${instructionId}`,
         { headers: this.reqHeaders }
       )
       return res.body
@@ -463,7 +463,7 @@ class Addigy {
     }
   }
 
-  async getFileUploadUrl (instruction_id: string): Promise<object[]> {
+  async getFileUploadUrl (): Promise<object[]> {
     try {
       // Why is this base URL different, you might ask? Great question... ask Addigy.
       let res = await this._addigyRequest(
