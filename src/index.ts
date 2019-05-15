@@ -42,7 +42,7 @@ class Addigy {
         `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -61,7 +61,7 @@ class Addigy {
           })
         }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -76,7 +76,7 @@ class Addigy {
           method: 'DELETE'
         }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -92,7 +92,7 @@ class Addigy {
         `${this.domain}/devices/online?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -104,7 +104,7 @@ class Addigy {
         `${this.domain}/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -116,7 +116,7 @@ class Addigy {
         `${this.domain}/policies/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -143,7 +143,7 @@ class Addigy {
         }
       )
       // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -164,7 +164,7 @@ class Addigy {
         `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLength}` + statusUri,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -180,7 +180,7 @@ class Addigy {
         `${this.domain}/policies?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -192,7 +192,7 @@ class Addigy {
         `${this.domain}/policies/details?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -224,7 +224,7 @@ class Addigy {
           body: postBody
         }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -240,7 +240,7 @@ class Addigy {
         `${this.domain}/maintenance?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLenth}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -256,7 +256,7 @@ class Addigy {
         `${this.domain}/applications?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -277,7 +277,7 @@ class Addigy {
         `${this.domain}/profiles?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}` + instructionUri,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -303,8 +303,7 @@ class Addigy {
           body: postBody
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -330,8 +329,7 @@ class Addigy {
           body: postBody
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -356,8 +354,7 @@ class Addigy {
           body: postBody
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -400,7 +397,7 @@ class Addigy {
         `${this.domain}/devices/output?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&action_id=${actionId}&agentid=${agentId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -416,7 +413,7 @@ class Addigy {
         `${this.domain}/catalog/public?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -432,7 +429,7 @@ class Addigy {
         `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -444,7 +441,7 @@ class Addigy {
         `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}$identifier=${softwareId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -456,7 +453,7 @@ class Addigy {
         `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&instructionid=${instructionId}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
@@ -469,7 +466,7 @@ class Addigy {
         `https://file-manager-prod.addigy.com/api/upload/url?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
         { headers: this.reqHeaders }
       )
-      return res.body
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
