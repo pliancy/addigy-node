@@ -466,7 +466,12 @@ class Addigy {
       // Why is this base URL different, you might ask? Great question... ask Addigy.
       let res = await this._addigyRequest(
         `https://file-manager-prod.addigy.com/api/upload/url`,
-        { headers: this.reqHeaders }
+        {
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          }
+        }
       )
       return JSON.parse(res.body)
     } catch (err) {
@@ -480,13 +485,12 @@ class Addigy {
 
     try {
       let res = await this._addigyRequest(
-        `https://file-manager-prod.addigy.com/_ah/upload/${uploadUrl}`,
+        `${uploadUrl}`,
         {
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
           },
-          method: 'POST',
           body: form
         }
       )
