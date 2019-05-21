@@ -465,7 +465,7 @@ class Addigy {
     try {
       // Why is this base URL different, you might ask? Great question... ask Addigy.
       let res = await this._addigyRequest(
-        `https://file-manager-prod.addigy.com/api/upload/url?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `https://file-manager-prod.addigy.com/api/upload/url`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
