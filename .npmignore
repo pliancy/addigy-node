@@ -1,6 +1,7 @@
 .idea
 .vscode
 docs
+.DS_Store
 
 src
 jest.config.js
