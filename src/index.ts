@@ -1,4 +1,6 @@
 import got from 'got'
+import fs from 'fs'
+import formdata from 'form-data'
 
 enum AlertStatus {
     Acknowledged = 'Acknowledged',
@@ -472,8 +474,58 @@ class Addigy {
     }
   }
 
-  // TODO: uploadFile()
-  // TODO: createCustomSoftware()
+  async uploadFile (uploadUrl: string, file: string): Promise<object[]> {
+    let form = new formdata()
+    form.append('file', fs.createReadStream(file))
+
+    try {
+      let res = await this._addigyRequest(
+        `https://file-manager-prod.addigy.com/_ah/upload/${uploadUrl}`,
+        {
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'POST',
+          body: form
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async createCustomSoftware (baseIdentifier: string, version: string, downloads: string[], installationScript: string, condition: string, removeScript: string): Promise<object[]> {
+    let postBody: any = {
+      'base_identifier': baseIdentifier,
+      'version': version,
+      'downloads': downloads,
+      'installation_script': installationScript,
+      'condition': condition,
+      'remove_script': removeScript
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        `${this.domain}/custom_software`,
+        {
+          headers: {
+            'client-id': this.config.clientId,
+            'client-secret': this.config.clientSecret
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
   private async _addigyRequest (url: string, options: any): Promise<any> {
     try {

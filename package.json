@@ -1,6 +1,6 @@
 {
   "name": "addigy",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -32,6 +32,9 @@
     "url": "https://github.com/calebalbers/addigy-node"
   },
   "dependencies": {
+    "@types/form-data": "^2.2.1",
+    "form-data": "^2.3.3",
+    "fs": "0.0.1-security",
     "got": "^8.3.2"
   },
   "devDependencies": {
