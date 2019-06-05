@@ -2,14 +2,10 @@
 
 # Addigy API SDK for Node.JS
 
-because... nobody should have to interact with Addigy's inconsistent API natively.
+This package takes the Addigy public API and covers it into a consistent promise-based interface.
 
-:warning: This is offered with zero guarentee that it will work today, and even less of a guarentee that it will work tomorrow.
 
-## TODO:
- - finish endpoints for uploading custom software
- - fully vet and test all endpoints more rigorously
- - document code fully
+:warning: Use this at your own risk. To error is human, to propogate error across all of prod via API is DevOps.
  
  ----
  
@@ -68,3 +64,5 @@ myAddigy.getPolicies().then(response => { policies = response })
     name: "Dev Policy",
     icon: 'fa fa-exchange' } ]
  ```
+
+Don't forget to catch your promises.
