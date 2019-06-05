@@ -2,7 +2,7 @@
 
 # Addigy API SDK for Node.JS
 
-This package takes the Addigy public API and covers it into a consistent promise-based interface.
+This package takes the Addigy public API and wraps it into a consistent promise-based interface.
 
 
 :warning: Use this at your own risk. To error is human, to propogate error across all of prod via API is DevOps.
