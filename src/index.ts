@@ -134,7 +134,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/policies/devices`,
         {
-          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
@@ -144,7 +143,6 @@ class Addigy {
           body: postBody
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
       return JSON.parse(res.body)
     } catch (err) {
       throw err
@@ -295,7 +293,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
@@ -321,7 +318,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
@@ -346,7 +342,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
@@ -376,7 +371,6 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/devices/commands`,
         {
-          // Why does _this_ endpoint in particular require client id/secret to be passed via headers instead of querystring? The world may never know.
           headers: {
             'client-id': this.config.clientId,
             'client-secret': this.config.clientSecret
@@ -386,7 +380,6 @@ class Addigy {
           body: postBody
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
       return res.body
     } catch (err) {
       throw err
@@ -463,7 +456,6 @@ class Addigy {
 
   async getFileUploadUrl (): Promise<object[]> {
     try {
-      // Why is this base URL different, you might ask? Great question... ask Addigy.
       let res = await this._addigyRequest(
         `https://file-manager-prod.addigy.com/api/upload/url`,
         {
@@ -494,7 +486,6 @@ class Addigy {
           body: form
         }
       )
-      // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
       return res.body
     } catch (err) {
       throw err
