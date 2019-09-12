@@ -10,7 +10,7 @@ enum AlertStatus {
 
 /**
  * The Config for the Addigy class
- * description of a thing
+ * This interface allows utilization of Addigy's internal API by using credentials of an actual user account
  * @export
  * @interface IAddigyConfig
  */
@@ -18,6 +18,15 @@ interface IAddigyConfig {
   /** the API credentials from Addigy */
   clientId: string
   clientSecret: string
+  /** user account credentials with owner/power user role */
+  adminUsername?: string
+  adminPassword?: string
+}
+
+interface IAddigyInternalAuthToken {
+  orgId: string
+  authToken: string
+  emailAddress: string
 }
 
 class Addigy {
@@ -517,6 +526,145 @@ class Addigy {
       )
       // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
       return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  //
+  // The following endpoints use Addigy's internal API. Use at your own risk.
+  //
+  async getUsers (): Promise<object[]> {
+    try {
+      let authToken = await this._getInternalAuthToken()
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/account',
+        {
+          headers: {
+            'auth-token': authToken.authToken,
+            email: authToken.emailAddress,
+            orgid: authToken.orgId
+          },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body).users
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async createUser (name: string, email: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+    let postBody: any = {
+      name: name,
+      email: email,
+      policies: policies,
+      role: role
+    }
+
+    if (phone !== undefined) {
+      postBody['phone'] = phone
+    }
+
+    try {
+      let authToken = await this._getInternalAuthToken()
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/users',
+        {
+          headers: {
+            'auth-token': authToken.authToken,
+            email: authToken.emailAddress,
+            orgid: authToken.orgId
+          },
+          method: 'POST',
+          body: postBody
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async updateUser (name: string, email: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+    let postBody: any = {
+      name: name,
+      email: email,
+      policies: policies,
+      role: role,
+      phone: ''
+    }
+
+    if (phone !== undefined) {
+      postBody['phone'] = phone
+    }
+
+    try {
+      let authToken = await this._getInternalAuthToken()
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/users',
+        {
+          headers: {
+            'auth-token': authToken.authToken,
+            email: authToken.emailAddress,
+            orgid: authToken.orgId
+          },
+          method: 'PUT',
+          body: postBody
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async deleteUser (userId: string, userEmail: string): Promise<object[]> {
+    try {
+      let authToken = await this._getInternalAuthToken()
+      let res = await this._addigyRequest(
+        `https://app-prod.addigy.com/api/users/${userId}?user_email=${encodeURIComponent(userEmail)}`,
+        {
+          headers: {
+            'auth-token': authToken.authToken,
+            email: authToken.emailAddress,
+            orgid: authToken.orgId
+          },
+          method: 'DELETE'
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  private async _getInternalAuthToken (): Promise<IAddigyInternalAuthToken> {
+    let postBody: any = {
+      'username': this.config.adminUsername,
+      'password': this.config.adminPassword
+    }
+
+    try {
+      if (!this.config.adminUsername || !this.config.adminPassword) throw new Error('The function you are using hits Addigy\'s internal API, but no username or password was provided in the constructor. Please fill out the adminUsername and adminPassword parameters.')
+      let res = await this._addigyRequest(
+        'https://prod.addigy.com/signin',
+        {
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+
+      res = JSON.parse(res.body)
+
+      let authToken = {
+        'orgId': res.orgid,
+        'authToken': res.authtoken,
+        'emailAddress': res.email
+      }
+
+      return authToken
     } catch (err) {
       throw err
     }
