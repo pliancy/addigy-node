@@ -8,6 +8,12 @@ enum AlertStatus {
     Unattended = 'Unattended'
 }
 
+enum UserRoles {
+  Owner = 'power',
+  Admin = 'admin',
+  User = 'user'
+}
+
 /**
  * The Config for the Addigy class
  * This interface allows utilization of Addigy's internal API by using credentials of an actual user account
@@ -554,7 +560,7 @@ class Addigy {
     }
   }
 
-  async createUser (name: string, email: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+  async createUser (email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -577,16 +583,17 @@ class Addigy {
             orgid: authToken.orgId
           },
           method: 'POST',
+          json: true,
           body: postBody
         }
       )
-      return JSON.parse(res.body)
+      return res.body
     } catch (err) {
       throw err
     }
   }
 
-  async updateUser (name: string, email: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+  async updateUser (email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -610,20 +617,27 @@ class Addigy {
             orgid: authToken.orgId
           },
           method: 'PUT',
+          json: true,
           body: postBody
         }
       )
-      return JSON.parse(res.body)
+      return res.body
     } catch (err) {
       throw err
     }
   }
 
-  async deleteUser (userId: string, userEmail: string): Promise<object[]> {
+  async deleteUser (email: string): Promise<object[]> {
     try {
       let authToken = await this._getInternalAuthToken()
+
+      // find userId that corresponds to the provided email
+      let users: Array<any> = await this.getUsers()
+      let user: any = users.find(element => element.email === email)
+      if (!user) throw new Error(`No user with email ${email} exists.`)
+
       let res = await this._addigyRequest(
-        `https://app-prod.addigy.com/api/users/${userId}?user_email=${encodeURIComponent(userEmail)}`,
+        `https://app-prod.addigy.com/api/users/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
             'auth-token': authToken.authToken,
@@ -633,6 +647,7 @@ class Addigy {
           method: 'DELETE'
         }
       )
+
       return JSON.parse(res.body)
     } catch (err) {
       throw err
@@ -656,12 +671,10 @@ class Addigy {
         }
       )
 
-      res = JSON.parse(res.body)
-
       let authToken = {
-        'orgId': res.orgid,
-        'authToken': res.authtoken,
-        'emailAddress': res.email
+        'orgId': res.body.orgid,
+        'authToken': res.body.authtoken,
+        'emailAddress': res.body.email
       }
 
       return authToken

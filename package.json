@@ -32,8 +32,8 @@
     "url": "https://github.com/calebalbers/addigy-node"
   },
   "dependencies": {
-    "@types/form-data": "^2.2.1",
-    "form-data": "^2.3.3",
+    "@types/form-data": "^2.5.0",
+    "form-data": "^2.5.1",
     "fs": "0.0.1-security",
     "got": "^8.3.2"
   },
@@ -46,7 +46,7 @@
     "husky": "^0.14.3",
     "jest": "^23.1.0",
     "lint-staged": "^7.2.0",
-    "rimraf": "^2.6.3",
+    "rimraf": "^2.7.1",
     "ts-jest": "^22.4.6",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.1.0",
