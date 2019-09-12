@@ -648,7 +648,7 @@ class Addigy {
     try {
       if (!this.config.adminUsername || !this.config.adminPassword) throw new Error('The function you are using hits Addigy\'s internal API, but no username or password was provided in the constructor. Please fill out the adminUsername and adminPassword parameters.')
       let res = await this._addigyRequest(
-        'https://prod.addigy.com/signin',
+        'https://prod.addigy.com/signin/',
         {
           method: 'POST',
           json: true,
