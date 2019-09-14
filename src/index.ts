@@ -540,6 +540,7 @@ class Addigy {
   //
   // The following endpoints use Addigy's internal API. Use at your own risk.
   //
+
   async getUsers (): Promise<object[]> {
     try {
       let authToken = await this._getInternalAuthToken()
@@ -608,8 +609,16 @@ class Addigy {
 
     try {
       let authToken = await this._getInternalAuthToken()
+
+      // find userId that corresponds to the provided email
+      let users: Array<any> = await this.getUsers()
+      let user: any = users.find(element => element.email === email)
+      if (!user) throw new Error(`No user with email ${email} exists.`)
+
+      postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
+
       let res = await this._addigyRequest(
-        'https://app-prod.addigy.com/api/users',
+        `https://app-prod.addigy.com/api/users/${user.id}`,
         {
           headers: {
             'auth-token': authToken.authToken,
@@ -648,7 +657,7 @@ class Addigy {
         }
       )
 
-      return JSON.parse(res.body)
+      return JSON.parse(res.body) // this will return "ok" if successful.
     } catch (err) {
       throw err
     }
