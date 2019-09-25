@@ -541,9 +541,8 @@ class Addigy {
   // The following endpoints use Addigy's internal API. Use at your own risk.
   //
 
-  async getUsers (): Promise<object[]> {
+  async getUsers (authToken: IAddigyInternalAuthToken): Promise<object[]> {
     try {
-      let authToken = await this._getInternalAuthToken()
       let res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/account',
         {
@@ -561,7 +560,7 @@ class Addigy {
     }
   }
 
-  async createUser (email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
+  async createUser (authToken: IAddigyInternalAuthToken, email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -574,7 +573,6 @@ class Addigy {
     }
 
     try {
-      let authToken = await this._getInternalAuthToken()
       let res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/users',
         {
@@ -594,7 +592,7 @@ class Addigy {
     }
   }
 
-  async updateUser (email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+  async updateUser (authToken: IAddigyInternalAuthToken, email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -608,10 +606,8 @@ class Addigy {
     }
 
     try {
-      let authToken = await this._getInternalAuthToken()
-
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers()
+      let users: Array<any> = await this.getUsers(authToken)
       let user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
@@ -636,12 +632,10 @@ class Addigy {
     }
   }
 
-  async deleteUser (email: string): Promise<object[]> {
+  async deleteUser (authToken: IAddigyInternalAuthToken, email: string): Promise<object[]> {
     try {
-      let authToken = await this._getInternalAuthToken()
-
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers()
+      let users: Array<any> = await this.getUsers(authToken)
       let user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
@@ -663,7 +657,7 @@ class Addigy {
     }
   }
 
-  private async _getInternalAuthToken (): Promise<IAddigyInternalAuthToken> {
+  async getAuthToken (): Promise<IAddigyInternalAuthToken> {
     let postBody: any = {
       'username': this.config.adminUsername,
       'password': this.config.adminPassword
@@ -687,6 +681,36 @@ class Addigy {
       }
 
       return authToken
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getImpersonationToken (authToken: IAddigyInternalAuthToken, orgId: string): Promise<IAddigyInternalAuthToken> {
+    let postBody: any = {
+      'orgid': orgId
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        'https://prod.addigy.com/impersonate_org/',
+        {
+          headers: {
+            Cookie: `auth_token=${authToken.authToken};`
+          },
+          method: 'GET',
+          json: true,
+          body: postBody
+        }
+      )
+
+      let impersonationToken = {
+        'orgId': orgId,
+        'authToken': res.headers['set-cookie'].find((e: string) => e.includes('auth_token') && !e.includes('original_auth_token')).split('auth_token=')[1].split(';')[0],
+        'emailAddress': authToken.emailAddress
+      }
+
+      return impersonationToken
     } catch (err) {
       throw err
     }
