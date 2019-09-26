@@ -29,7 +29,12 @@ interface IAddigyConfig {
   adminPassword?: string
 }
 
-interface IAddigyInternalAuthToken {
+/*
+ * Various combinations of the auth token, organization ID, and email address of the callee are
+ * required for different calls to Addigy's internal API endpoints. To make things easier,
+ * they are all packaged together into a single authentication object
+ */
+interface IAddigyInternalAuthObject {
   orgId: string
   authToken: string
   emailAddress: string
@@ -541,15 +546,15 @@ class Addigy {
   // The following endpoints use Addigy's internal API. Use at your own risk.
   //
 
-  async getUsers (authToken: IAddigyInternalAuthToken): Promise<object[]> {
+  async getUsers (authObject: IAddigyInternalAuthObject): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/account',
         {
           headers: {
-            'auth-token': authToken.authToken,
-            email: authToken.emailAddress,
-            orgid: authToken.orgId
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
           },
           method: 'GET'
         }
@@ -560,7 +565,7 @@ class Addigy {
     }
   }
 
-  async createUser (authToken: IAddigyInternalAuthToken, email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
+  async createUser (authObject: IAddigyInternalAuthObject, email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -577,9 +582,9 @@ class Addigy {
         'https://app-prod.addigy.com/api/users',
         {
           headers: {
-            'auth-token': authToken.authToken,
-            email: authToken.emailAddress,
-            orgid: authToken.orgId
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
           },
           method: 'POST',
           json: true,
@@ -592,7 +597,7 @@ class Addigy {
     }
   }
 
-  async updateUser (authToken: IAddigyInternalAuthToken, email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
+  async updateUser (authObject: IAddigyInternalAuthObject, email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
     let postBody: any = {
       name: name,
       email: email,
@@ -607,7 +612,7 @@ class Addigy {
 
     try {
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers(authToken)
+      let users: Array<any> = await this.getUsers(authObject)
       let user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
@@ -617,9 +622,9 @@ class Addigy {
         `https://app-prod.addigy.com/api/users/${user.id}`,
         {
           headers: {
-            'auth-token': authToken.authToken,
-            email: authToken.emailAddress,
-            orgid: authToken.orgId
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
           },
           method: 'PUT',
           json: true,
@@ -632,10 +637,10 @@ class Addigy {
     }
   }
 
-  async deleteUser (authToken: IAddigyInternalAuthToken, email: string): Promise<object[]> {
+  async deleteUser (authObject: IAddigyInternalAuthObject, email: string): Promise<object[]> {
     try {
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers(authToken)
+      let users: Array<any> = await this.getUsers(authObject)
       let user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
@@ -643,9 +648,9 @@ class Addigy {
         `https://app-prod.addigy.com/api/users/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
-            'auth-token': authToken.authToken,
-            email: authToken.emailAddress,
-            orgid: authToken.orgId
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
           },
           method: 'DELETE'
         }
@@ -657,7 +662,7 @@ class Addigy {
     }
   }
 
-  async getAuthToken (): Promise<IAddigyInternalAuthToken> {
+  async getAuthObject (): Promise<IAddigyInternalAuthObject> {
     let postBody: any = {
       'username': this.config.adminUsername,
       'password': this.config.adminPassword
@@ -674,19 +679,19 @@ class Addigy {
         }
       )
 
-      let authToken = {
+      let authObject = {
         'orgId': res.body.orgid,
         'authToken': res.body.authtoken,
         'emailAddress': res.body.email
       }
 
-      return authToken
+      return authObject
     } catch (err) {
       throw err
     }
   }
 
-  async getImpersonationToken (authToken: IAddigyInternalAuthToken, orgId: string): Promise<IAddigyInternalAuthToken> {
+  async getImpersonationAuthObject (authObject: IAddigyInternalAuthObject, orgId: string): Promise<IAddigyInternalAuthObject> {
     let postBody: any = {
       'orgid': orgId
     }
@@ -696,7 +701,7 @@ class Addigy {
         'https://prod.addigy.com/impersonate_org/',
         {
           headers: {
-            Cookie: `auth_token=${authToken.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`
           },
           method: 'GET',
           json: true,
@@ -704,13 +709,13 @@ class Addigy {
         }
       )
 
-      let impersonationToken = {
+      let impersonationAuthObject = {
         'orgId': orgId,
         'authToken': res.headers['set-cookie'].find((e: string) => e.includes('auth_token') && !e.includes('original_auth_token')).split('auth_token=')[1].split(';')[0],
-        'emailAddress': authToken.emailAddress
+        'emailAddress': authObject.emailAddress
       }
 
-      return impersonationToken
+      return impersonationAuthObject
     } catch (err) {
       throw err
     }
