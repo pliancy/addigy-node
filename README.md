@@ -71,9 +71,9 @@ Don't forget to catch your promises.
 
 ## Advanced Usage
 
-This wrapper supports some advanced functions such as user management, retreival of billing information, creation of ScreenConnect links, and management of API keys. These all rely on use of Addigy's interal API. Usage of this module is unsuported in general, but consider use of these endpoints as even less than unsuported. I actively discourage their use. With that disclaimer out of the way, here's how to use them:
+This wrapper supports some advanced functions such as user management, retreival of billing information, creation of ScreenConnect links, and management of API keys. These all rely on use of Addigy's internal API, which can change at any time without notice. Usage of this module is unsuported in general, but consider use of these endpoints as even less than unsuported. I actively discourage their use. With that disclaimer out of the way, here's how to use them:
 
-Expand the Constructor's parameters as so:
+Expand the Constructor's parameters to include the username and password of a user account at the partnr tenant level that has 'Owner' access, as so:
  ```js
  var Addigy = require('addigy')
 
