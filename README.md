@@ -66,3 +66,64 @@ myAddigy.getPolicies().then(response => { policies = response })
  ```
 
 Don't forget to catch your promises.
+
+ ----
+
+## Advanced Usage
+
+This wrapper supports some advanced functions such as user management, retreival of billing information, creation of ScreenConnect links, and management of API keys. These all rely on use of Addigy's interal API. Usage of this module is unsuported in general, but consider use of these endpoints as even less than unsuported. I actively discourage their use. With that disclaimer out of the way, here's how to use them:
+
+Expand the Constructor's parameters as so:
+ ```js
+ var Addigy = require('addigy')
+
+let myAddigy = new Addigy({
+  clientId: '52c6...',
+  clientSecret: '8db7...',
+  adminUsername: 'hopefully_a_service_account@example.net',
+  adminPassword: 'hunter2'
+})
+ ```
+
+From there, call `myAddigy.getAuthObject()` to generate an authentication object that contains an auth token and other information needed by various internal calls. The auth object will look like so:
+
+```js
+{
+  orgId: 'a4d7...',
+  emailAddress: 'hopefully_a_service_account@example.net',
+  authToken: '35a8...'
+}
+```
+
+From there, you can pass that auth object to any of the internal API endpoints, like so:
+```js
+myAddigy.createUser(authObject, "whateveryouwant@example.com", "First Last", [], "user")
+  .then(result => {
+    console.log(result)
+  })
+  .catch(err => {
+    console.log(err) // actually handle your errors though
+  })
+```
+
+If you are a partner that manages multiple independent Addigy tenants, you can easily run commands against your child tenants by calling the `getImpersonationAuthObject()` function. It will return a new authentication object pertinent to the given tenant that can be used on subsequent calls. An example of the workflow is as follows:
+
+```js
+let myAddigy = new Addigy({
+  clientId: '52c6...',
+  clientSecret: '8db7...',
+  adminUsername: 'an_account_at_the_partner_level_with_owner_role@example.net',
+  adminPassword: '...'
+})
+
+let partnerAuthObject = await myAddigy.getAuthObject()
+let desiredTenantOrgId = '078b...'
+
+let impersonationObject = await myAddigy.getImpersonationAuthObject(partnerAuthObject, desiredTenantOrgId)
+
+// Now we have a new authentication object to call Addigy's API for a given tenant
+
+await myAddigy.getUsers(impersonationObject)
+```
+
+Have fun.
