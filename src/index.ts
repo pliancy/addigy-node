@@ -603,7 +603,10 @@ class Addigy {
       email: email,
       policies: policies,
       role: role,
-      phone: ''
+      phone: '',
+      uid: '', // this has to be blank on th PUT for some reason
+      addigy_role: '', // this also has to be blank
+      authanvil_tfa_username: ''
     }
 
     if (phone !== undefined) {
@@ -657,6 +660,119 @@ class Addigy {
       )
 
       return JSON.parse(res.body) // this will return "ok" if successful.
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getBillingData (authObject: IAddigyInternalAuthObject): Promise<object[]> {
+    try {
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/billing/get_chargeover_billing_data',
+        {
+          headers: {
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
+          },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getApiIntegrations (authObject: IAddigyInternalAuthObject): Promise<object[]> {
+    try {
+      let res = await this._addigyRequest(
+        'https://prod.addigy.com/accounts/api/keys/get/',
+        {
+          headers: {
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
+          },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  // async createApiIntegration (authObject: IAddigyInternalAuthObject, name: string): Promise<object[]> {
+  //   let postBody: any = {
+  //     'name': name
+  //   }
+
+  //   try {
+  //     let res = await this._addigyRequest(
+  //       'https://prod.addigy.com/accounts/api/keys/create/',
+  //       {
+  //         headers: {
+  //           Cookie: `auth_token=${authObject.authToken};`
+  //         },
+  //         method: 'POST',
+  //         form: true,
+  //         body: postBody
+  //       }
+  //     )
+  //     return JSON.parse(res.body)
+  //   } catch (err) {
+  //     throw err
+  //   }
+  // }
+
+  // async deleteApiIntegration (authObject: IAddigyInternalAuthObject, objectId: string): Promise<object[]> {
+  //   let postBody: any = {
+  //     'object_id': objectId
+  //   }
+
+  //   try {
+  //     let res = await this._addigyRequest(
+  //       'https://prod.addigy.com/accounts/api/keys/delete/',
+  //       {
+  //         headers: {
+  //           Cookie: `auth_token=${authObject.authToken};`
+  //         },
+  //         method: 'POST',
+  //         form: true,
+  //         body: postBody
+  //       }
+  //     )
+  //     return JSON.parse(res.body)
+  //   } catch (err) {
+  //     throw err
+  //   }
+  // }
+
+  async getScreenconnectLinks (authObject: IAddigyInternalAuthObject, sessionId: string, agentId?: string): Promise<object[]> {
+    // in most (all?) cases tested, the agentId and sessionId are identical, but they are independently passed in the API call
+    agentId = agentId ? agentId : sessionId
+
+    let postBody = {
+      'sessionId': sessionId,
+      'agentid': agentId
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/devices/screenconnect/links',
+        {
+          headers: {
+            'auth-token': authObject.authToken,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      return JSON.parse(res.body)
     } catch (err) {
       throw err
     }
