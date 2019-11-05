@@ -622,9 +622,6 @@ class Addigy {
 
       postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
-      console.log(`Updating user: ${email} with id: ${user.id}`)
-      console.log(postBody)
-
       let res = await this._addigyRequest(
         `https://app-prod.addigy.com/api/users/${user.id}?userid=${user.id}`,
         {
