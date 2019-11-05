@@ -599,14 +599,15 @@ class Addigy {
 
   async updateUser (authObject: IAddigyInternalAuthObject, email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
     let postBody: any = {
-      name: name,
-      email: email,
-      policies: policies,
-      role: role,
-      phone: '',
+      id: '',
       uid: '', // this has to be blank on th PUT for some reason
+      name: name,
+      authanvil_tfa_username: '',
+      email: email,
+      phone: '',
+      role: role,
       addigy_role: '', // this also has to be blank
-      authanvil_tfa_username: ''
+      policies: policies
     }
 
     if (phone !== undefined) {
@@ -621,8 +622,11 @@ class Addigy {
 
       postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
+      console.log(`Updating user: ${email} with id: ${user.id}`)
+      console.log(postBody)
+
       let res = await this._addigyRequest(
-        `https://app-prod.addigy.com/api/users/${user.id}`,
+        `https://app-prod.addigy.com/api/users/${user.id}?userid=${user.id}`,
         {
           headers: {
             'auth-token': authObject.authToken,
