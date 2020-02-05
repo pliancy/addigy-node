@@ -552,7 +552,7 @@ class Addigy {
         'https://app-prod.addigy.com/api/account',
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -582,7 +582,7 @@ class Addigy {
         'https://app-prod.addigy.com/api/users',
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -626,7 +626,7 @@ class Addigy {
         `https://app-prod.addigy.com/api/users/${user.id}?userid=${user.id}`,
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -652,7 +652,7 @@ class Addigy {
         `https://app-prod.addigy.com/api/users/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -672,7 +672,7 @@ class Addigy {
         'https://app-prod.addigy.com/api/billing/get_chargeover_billing_data',
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -691,7 +691,7 @@ class Addigy {
         'https://prod.addigy.com/accounts/api/keys/get/',
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -764,7 +764,7 @@ class Addigy {
         'https://app-prod.addigy.com/api/devices/screenconnect/links',
         {
           headers: {
-            'auth-token': authObject.authToken,
+            Cookie: `auth_token=${authObject.authToken};`,
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
