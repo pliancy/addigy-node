@@ -704,51 +704,45 @@ class Addigy {
     }
   }
 
-  // async createApiIntegration (authObject: IAddigyInternalAuthObject, name: string): Promise<object[]> {
-  //   let postBody: any = {
-  //     'name': name
-  //   }
+  async createApiIntegration (authObject: IAddigyInternalAuthObject, name: string): Promise<object> {
+    let postBody: any = {
+      name
+    }
+    console.log(JSON.stringify(postBody))
+    try {
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/integrations/keys',
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
-  //   try {
-  //     let res = await this._addigyRequest(
-  //       'https://prod.addigy.com/accounts/api/keys/create/',
-  //       {
-  //         headers: {
-  //           Cookie: `auth_token=${authObject.authToken};`
-  //         },
-  //         method: 'POST',
-  //         form: true,
-  //         body: postBody
-  //       }
-  //     )
-  //     return JSON.parse(res.body)
-  //   } catch (err) {
-  //     throw err
-  //   }
-  // }
-
-  // async deleteApiIntegration (authObject: IAddigyInternalAuthObject, objectId: string): Promise<object[]> {
-  //   let postBody: any = {
-  //     'object_id': objectId
-  //   }
-
-  //   try {
-  //     let res = await this._addigyRequest(
-  //       'https://prod.addigy.com/accounts/api/keys/delete/',
-  //       {
-  //         headers: {
-  //           Cookie: `auth_token=${authObject.authToken};`
-  //         },
-  //         method: 'POST',
-  //         form: true,
-  //         body: postBody
-  //       }
-  //     )
-  //     return JSON.parse(res.body)
-  //   } catch (err) {
-  //     throw err
-  //   }
-  // }
+  async deleteApiIntegration (authObject: IAddigyInternalAuthObject, objectId: string): Promise<object> {
+    try {
+      let res = await this._addigyRequest(
+        `https://app-prod.addigy.com/api/integrations/keys?id=${objectId}`,
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'DELETE'
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
 
   async getScreenconnectLinks (authObject: IAddigyInternalAuthObject, sessionId: string, agentId?: string): Promise<object[]> {
     // in most (all?) cases tested, the agentId and sessionId are identical, but they are independently passed in the API call
@@ -771,6 +765,23 @@ class Addigy {
           method: 'POST',
           json: true,
           body: postBody
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getFileVaultKeys (authObject: IAddigyInternalAuthObject): Promise<object[]> {
+    try {
+      let res = await this._addigyRequest(
+        'https://prod.addigy.com/get_org_filevault_keys/',
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'GET'
         }
       )
       return JSON.parse(res.body)
