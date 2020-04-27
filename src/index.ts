@@ -1,6 +1,7 @@
 import got from 'got'
 import fs from 'fs'
 import formdata from 'form-data'
+import { v4 as uuidv4 } from 'uuid'
 
 enum AlertStatus {
     Acknowledged = 'Acknowledged',
@@ -768,6 +769,49 @@ class Addigy {
         }
       )
       return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async createKernelExtensionPolicy (authObject: IAddigyInternalAuthObject, name: string, allowOverrides: boolean = false, teamIds?: string[], bundleIds?: object): Promise<object> {
+    let payload: any = {}
+    let payloadUUID = uuidv4()
+    let groupUUID = uuidv4()
+    if (teamIds) {
+      payload['allowed_team_identifiers'] = teamIds
+    }
+    if (bundleIds) {
+      payload['allowed_kernel_extensions'] = bundleIds
+    }
+    let postBody = {
+      'payloads': [{
+        addigy_payload_type: 'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy',
+        payload_type: 'com.apple.syspolicy.kernel-extension-policy',
+        payload_version: 1,
+        payload_identifier: `com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy.${groupUUID}`,
+        payload_uuid: payloadUUID,
+        payload_group_id: groupUUID,
+        payload_enabled: true,
+        payload_display_name: name,
+        allow_user_overrides: allowOverrides,
+        ...payload
+      }]
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'POST',
+          json: true,
+          body: postBody
+        }
+      )
+      return res.body
     } catch (err) {
       throw err
     }
