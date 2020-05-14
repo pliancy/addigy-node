@@ -834,6 +834,33 @@ class Addigy {
     }
   }
 
+  async getApnsCerts (authObject: IAddigyInternalAuthObject, next?: string, previous?: string): Promise<object[]> {
+    let url = 'https://app-prod.addigy.com/api/apn/user/apn/list'
+    if (next) {
+      url = `${url}?next=${next}`
+    }
+    if (previous) {
+      url = `${url}?previous=${previous}`
+    }
+
+    try {
+      let res = await this._addigyRequest(
+        url,
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`,
+            email: authObject.emailAddress,
+            orgid: authObject.orgId
+          },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body).mdm_app_list
+    } catch (err) {
+      throw err
+    }
+  }
+
   async getAuthObject (): Promise<IAddigyInternalAuthObject> {
     let postBody: any = {
       'username': this.config.adminUsername,
