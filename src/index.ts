@@ -553,9 +553,7 @@ class Addigy {
         'https://app-prod.addigy.com/api/account',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`,
-            email: authObject.emailAddress,
-            orgid: authObject.orgId
+            Cookie: `auth_token=${authObject.authToken};`
           },
           method: 'GET'
         }
@@ -580,12 +578,10 @@ class Addigy {
 
     try {
       let res = await this._addigyRequest(
-        'https://app-prod.addigy.com/api/users',
+        'https://app-prod.addigy.com/api/cloud/users/user',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`,
-            email: authObject.emailAddress,
-            orgid: authObject.orgId
+            Cookie: `auth_token=${authObject.authToken};`
           },
           method: 'POST',
           json: true,
@@ -624,19 +620,17 @@ class Addigy {
       postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
       let res = await this._addigyRequest(
-        `https://app-prod.addigy.com/api/users/${user.id}?userid=${user.id}`,
+        `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(user.email)}`,
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`,
-            email: authObject.emailAddress,
-            orgid: authObject.orgId
+            Cookie: `auth_token=${authObject.authToken};`
           },
           method: 'PUT',
           json: true,
           body: postBody
         }
       )
-      return res.body
+      return res.body // returns `ok` if successful...
     } catch (err) {
       throw err
     }
@@ -650,12 +644,10 @@ class Addigy {
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
       let res = await this._addigyRequest(
-        `https://app-prod.addigy.com/api/users/${user.id}?user_email=${encodeURIComponent(email)}`,
+        `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`,
-            email: authObject.emailAddress,
-            orgid: authObject.orgId
+            Cookie: `auth_token=${authObject.authToken};`
           },
           method: 'DELETE'
         }
