@@ -50,7 +50,9 @@ class Addigy {
     this.config = _config
     this.reqHeaders = {
       'content-type': 'application/json',
-      accept: 'application/json'
+      accept: 'application/json',
+      'client-id': this.config.clientId,
+      'client-secret': this.config.clientSecret
     }
     this.domain = 'https://prod.addigy.com/api'
   }
@@ -62,7 +64,7 @@ class Addigy {
   async getPolicyInstructions (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
+        `${this.domain}/policies/instructions?provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -74,7 +76,7 @@ class Addigy {
   async createPolicyInstructions (policyId: string, instructionId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/policies/instructions`,
         {
           headers: this.reqHeaders,
           method: 'POST',
@@ -93,7 +95,7 @@ class Addigy {
   async deletePolicyInstructions (policyId: string, instructionId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/instructions?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policyId}&instruction_id=${instructionId}&provider=${provider}`,
+        `${this.domain}/policies/instructions?policy_id=${policyId}&instruction_id=${instructionId}&provider=${provider}`,
         {
           headers: this.reqHeaders,
           method: 'DELETE'
@@ -112,7 +114,7 @@ class Addigy {
   async getOnlineDevices (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/devices/online?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/devices/online`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -124,7 +126,7 @@ class Addigy {
   async getDevices (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/devices`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -136,7 +138,7 @@ class Addigy {
   async getPolicyDevices (policyId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/devices?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&policy_id=${policyId}`,
+        `${this.domain}/policies/devices?policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -182,7 +184,7 @@ class Addigy {
 
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/alerts?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLength}` + statusUri,
+        `${this.domain}/alerts?page=${page}&per_page=${pageLength}` + statusUri,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -198,7 +200,7 @@ class Addigy {
   async getPolicies (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/policies`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -210,7 +212,7 @@ class Addigy {
   async getPolicyDetails (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies/details?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&provider=${provider}&policy_id=${policyId}`,
+        `${this.domain}/policies/details?provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -238,7 +240,7 @@ class Addigy {
 
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/policies?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/policies`,
         {
           method: 'POST',
           form: true,
@@ -258,7 +260,7 @@ class Addigy {
   async getMaintenance (page: number = 1, pageLenth: number = 10): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/maintenance?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&page=${page}&per_page=${pageLenth}`,
+        `${this.domain}/maintenance?page=${page}&per_page=${pageLenth}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -274,7 +276,7 @@ class Addigy {
   async getInstalledApplications (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/applications?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/applications`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -290,12 +292,12 @@ class Addigy {
   async getProfiles (instructionId?: string): Promise<object[]> {
     let instructionUri = ''
     if (instructionId !== undefined) {
-      instructionUri = `&instruction_id=${instructionId}`
+      instructionUri = `?instruction_id=${instructionId}`
     }
 
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/profiles?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}` + instructionUri,
+        `${this.domain}/profiles` + instructionUri,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -314,10 +316,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           method: 'POST',
           json: true,
           body: postBody
@@ -339,10 +338,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           method: 'PUT',
           json: true,
           body: postBody
@@ -363,10 +359,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           method: 'DELETE',
           json: true,
           body: postBody
@@ -392,10 +385,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/devices/commands`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           method: 'POST',
           json: true,
           body: postBody
@@ -410,7 +400,7 @@ class Addigy {
   async getCommandOutput (actionId: string, agentId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/devices/output?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&action_id=${actionId}&agentid=${agentId}`,
+        `${this.domain}/devices/output?action_id=${actionId}&agentid=${agentId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -426,7 +416,7 @@ class Addigy {
   async getPublicSoftware (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/catalog/public?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/catalog/public`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -442,7 +432,7 @@ class Addigy {
   async getCustomSoftware (): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+        `${this.domain}/custom-software`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -454,7 +444,7 @@ class Addigy {
   async getCustomSoftwareAllVersions (softwareId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}$identifier=${softwareId}`,
+        `${this.domain}/custom-software?identifier=${softwareId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -466,7 +456,7 @@ class Addigy {
   async getCustomSoftwareSpecificVersion (instructionId: string): Promise<object[]> {
     try {
       let res = await this._addigyRequest(
-        `${this.domain}/custom-software?client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}&instructionid=${instructionId}`,
+        `${this.domain}/custom-software?instructionid=${instructionId}`,
         { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
@@ -479,12 +469,7 @@ class Addigy {
     try {
       let res = await this._addigyRequest(
         `https://file-manager-prod.addigy.com/api/upload/url`,
-        {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          }
-        }
+        { headers: this.reqHeaders }
       )
       return JSON.parse(res.body)
     } catch (err) {
@@ -500,10 +485,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${uploadUrl}`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           body: form
         }
       )
@@ -527,10 +509,7 @@ class Addigy {
       let res = await this._addigyRequest(
         `${this.domain}/custom_software`,
         {
-          headers: {
-            'client-id': this.config.clientId,
-            'client-secret': this.config.clientSecret
-          },
+          headers: this.reqHeaders,
           method: 'POST',
           json: true,
           body: postBody
