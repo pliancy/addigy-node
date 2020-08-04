@@ -465,11 +465,24 @@ class Addigy {
     }
   }
 
-  async getFileUploadUrl (): Promise<object[]> {
+  async getFileUploadUrl (fileName: string, contentType?: string): Promise<string> {
+    const headers = {
+      'client-Id': this.config.clientId,
+      'client-Secret': this.config.clientSecret,
+      'file-name': fileName,
+      'content-type': contentType
+    }
+
+    if (contentType !== undefined) {
+      headers['content-type'] = contentType
+    }
+
     try {
       let res = await this._addigyRequest(
         `https://file-manager-prod.addigy.com/api/upload/url`,
-        { headers: this.reqHeaders }
+        {
+          headers: headers
+        }
       )
       return JSON.parse(res.body)
     } catch (err) {
@@ -477,19 +490,23 @@ class Addigy {
     }
   }
 
-  async uploadFile (uploadUrl: string, file: string): Promise<object[]> {
-    let form = new formdata()
-    form.append('file', fs.createReadStream(file))
-
+  async uploadFile (uploadUrl: string, filePath: string, contentType?: string): Promise<object[] | null> {
+    const file = fs.createReadStream(filePath)
+    const headers = {
+      'content-type': 'application/octet-stream'
+    }
+    if (contentType !== undefined) {
+      headers['content-type'] = contentType
+    }
     try {
-      let res = await this._addigyRequest(
-        `${uploadUrl}`,
-        {
-          headers: this.reqHeaders,
-          body: form
-        }
-      )
-      return res.body
+      let res = await this._addigyRequest(`${uploadUrl}`, {
+        headers: {
+          'content-type': 'application/octet-stream'
+        },
+        body: file,
+        method: 'PUT'
+      })
+      return res?.body
     } catch (err) {
       throw err
     }
