@@ -490,7 +490,7 @@ class Addigy {
     }
   }
 
-  async uploadFile (uploadUrl: string, filePath: string, contentType?: string): Promise<object[] | null> {
+  async uploadFile (uploadUrl: string, filePath: string, contentType?: string): Promise<object[]> {
     const file = fs.createReadStream(filePath)
     const headers = {
       'content-type': 'application/octet-stream'
@@ -506,7 +506,7 @@ class Addigy {
         body: file,
         method: 'PUT'
       })
-      return res?.body
+      return res.body
     } catch (err) {
       throw err
     }
