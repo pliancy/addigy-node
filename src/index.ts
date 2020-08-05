@@ -1,6 +1,4 @@
 import got from 'got'
-import fs from 'fs'
-import formdata from 'form-data'
 import { v4 as uuidv4 } from 'uuid'
 
 enum AlertStatus {
@@ -490,8 +488,7 @@ class Addigy {
     }
   }
 
-  async uploadFile (uploadUrl: string, filePath: string, contentType?: string): Promise<object[]> {
-    const file = fs.createReadStream(filePath)
+  async uploadFile (uploadUrl: string, file: object, contentType?: string): Promise<object[]> {
     const headers = {
       'content-type': 'application/octet-stream'
     }
