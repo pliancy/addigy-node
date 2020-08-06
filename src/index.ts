@@ -1,6 +1,4 @@
 import got from 'got'
-import fs from 'fs'
-import formdata from 'form-data'
 import { v4 as uuidv4 } from 'uuid'
 
 enum AlertStatus {
@@ -465,11 +463,20 @@ class Addigy {
     }
   }
 
-  async getFileUploadUrl (): Promise<object[]> {
+  async getFileUploadUrl (fileName: string, contentType?: string): Promise<string> {
+    const headers = {
+      'client-Id': this.config.clientId,
+      'client-Secret': this.config.clientSecret,
+      'file-name': fileName,
+      'content-type': contentType ?? 'application/octet-stream'
+    }
+
     try {
       let res = await this._addigyRequest(
         `https://file-manager-prod.addigy.com/api/upload/url`,
-        { headers: this.reqHeaders }
+        {
+          headers: headers
+        }
       )
       return JSON.parse(res.body)
     } catch (err) {
@@ -477,18 +484,17 @@ class Addigy {
     }
   }
 
-  async uploadFile (uploadUrl: string, file: string): Promise<object[]> {
-    let form = new formdata()
-    form.append('file', fs.createReadStream(file))
+  async uploadFile (uploadUrl: string, file: object, contentType?: string): Promise<object[]> {
+    const headers = {
+      'content-type': contentType ?? 'application/octet-stream'
+    }
 
     try {
-      let res = await this._addigyRequest(
-        `${uploadUrl}`,
-        {
-          headers: this.reqHeaders,
-          body: form
-        }
-      )
+      let res = await this._addigyRequest(`${uploadUrl}`, {
+        headers: headers,
+        body: file,
+        method: 'PUT'
+      })
       return res.body
     } catch (err) {
       throw err
