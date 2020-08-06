@@ -468,11 +468,7 @@ class Addigy {
       'client-Id': this.config.clientId,
       'client-Secret': this.config.clientSecret,
       'file-name': fileName,
-      'content-type': contentType
-    }
-
-    if (contentType !== undefined) {
-      headers['content-type'] = contentType
+      'content-type': contentType ?? 'application/octet-stream'
     }
 
     try {
@@ -490,16 +486,12 @@ class Addigy {
 
   async uploadFile (uploadUrl: string, file: object, contentType?: string): Promise<object[]> {
     const headers = {
-      'content-type': 'application/octet-stream'
+      'content-type': contentType ?? 'application/octet-stream'
     }
-    if (contentType !== undefined) {
-      headers['content-type'] = contentType
-    }
+
     try {
       let res = await this._addigyRequest(`${uploadUrl}`, {
-        headers: {
-          'content-type': 'application/octet-stream'
-        },
+        headers: headers,
         body: file,
         method: 'PUT'
       })
