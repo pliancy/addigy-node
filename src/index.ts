@@ -542,7 +542,7 @@ class Addigy {
     }
   }
 
-  async getFileInfo (
+  async getSmartFileInfo (
     authObject: IAddigyInternalAuthObject,
     fileId: string
   ): Promise<object[]> {
@@ -553,6 +553,23 @@ class Addigy {
           headers: {
             Cookie: `auth_token=${authObject.authToken};`
           },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getFileInfo (
+    fileId: string
+  ): Promise<object[]> {
+    try {
+      const res = await this._addigyRequest(
+        ` https://file-manager-prod.addigy.com/api/upload/metadata/${fileId}`,
+        {
+          headers: this.reqHeaders,
           method: 'GET'
         }
       )
