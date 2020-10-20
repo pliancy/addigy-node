@@ -620,7 +620,10 @@ class Addigy {
     const customSoftware: any = await this.createCustomSoftware(baseIdentifier, version, downloads, installationScript, conditionScript, removalScript)
     await this.copySoftwareInstructionToStage(authObject, customSoftware.instructionId)
 
-    customSoftware.description = description
+    if (typeof description !== 'undefined') {
+      customSoftware.description = description
+    }
+
     if (typeof softwareIcon !== 'undefined') {
       customSoftware.software_icon = softwareIcon
       customSoftware.icon = ''
@@ -629,6 +632,40 @@ class Addigy {
     if (typeof profiles !== 'undefined') {
       customSoftware.profiles = profiles
     }
+
+    const updateSoftwareRes = await this.updateSoftwareInstruction(authObject, customSoftware)
+    await this.confirmSoftwareInstruction(authObject, customSoftware.instructionId)
+    return updateSoftwareRes
+  }
+
+  async updateSmartSoftwareSpecificVersion (authObject: IAddigyInternalAuthObject, instructionId: string, baseIdentifier: string, version: string, downloads: AddigyDownload[], conditionScript: string, installationScript: string, removalScript: string, description?: string, profiles?: object, softwareIcon?: AddigyDownload): Promise<object> {
+    let customSoftware: any = await this.getCustomSoftwareSpecificVersion(instructionId)
+    await this.copySoftwareInstructionToStage(authObject, instructionId)
+
+    const updatedSoftware = {
+      instructionId: instructionId,
+      base_identifier: baseIdentifier,
+      version: version,
+      downloads: downloads,
+      condition: conditionScript,
+      installation_script: installationScript,
+      remove_script: removalScript
+    }
+
+    if (typeof description !== 'undefined') {
+      customSoftware.description = description
+    }
+
+    if (typeof softwareIcon !== 'undefined') {
+      customSoftware.software_icon = softwareIcon
+      customSoftware.icon = ''
+    }
+
+    if (typeof profiles !== 'undefined') {
+      customSoftware.profiles = profiles
+    }
+
+    customSoftware = { ...updatedSoftware }
 
     const updateSoftwareRes = await this.updateSoftwareInstruction(authObject, customSoftware)
     await this.confirmSoftwareInstruction(authObject, customSoftware.instructionId)
