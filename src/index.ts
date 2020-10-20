@@ -628,10 +628,8 @@ class Addigy {
 
   async createSmartSoftware (authObject: IAddigyInternalAuthObject, baseIdentifier: string, version: string, downloads: string[], conditionScript: string, installationScript: string, removalScript: string, description?: string, profiles?: object, icon?: object): Promise<object> {
     const customSoftware: any = await this.createCustomSoftware(baseIdentifier, version, downloads, installationScript, conditionScript, removalScript)
-    console.log(customSoftware)
-    console.log(customSoftware.instructionId)
-    const ins = await this.copySoftwareInstructionToStage(authObject, customSoftware.instructionId)
-    console.log('ins ', ins)
+    await this.copySoftwareInstructionToStage(authObject, customSoftware.instructionId)
+
     customSoftware.description = description
     if (typeof icon !== 'undefined') {
       customSoftware.icon = icon
@@ -642,7 +640,6 @@ class Addigy {
     }
 
     const updateSoftwareRes = await this.updateSoftwareInstruction(authObject, customSoftware)
-    console.log('updateSoftwareRes', updateSoftwareRes)
     await this.confirmSoftwareInstruction(authObject, customSoftware.instructionId)
     return updateSoftwareRes
   }
