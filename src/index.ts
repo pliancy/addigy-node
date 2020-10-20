@@ -30,44 +30,17 @@ interface IAddigyConfig {
   adminPassword?: string
 }
 
-// interface customSoftwareStage {
-//   label: string
-//   public: boolean
-//   run_on_success: boolean
-//   version: string
-//   category: string
-//   provider: 'ansible-custom-software'
-//   condition: string
-//   base_identifier: 'Acrobat Reader'
-//   editid: 'c95fa2ac-b371-4bf8-944b-fd970a608fa4'
-//   downloads: object[]
-//   policy_restricted: boolean
-//   remove_script: string
-//   instructionId: string
-//   type: string
-//   commands: []
-//   icon: string
-//   orgid: string
-//   name: string,
-//   description: string
-//   'status_on_skipped': 'finished'
-//   user_email: string,
-//   'identifier': 'Acrobat Reader-3995dc02-eef6-444d-800d-80147bf21719'
-//   'installation_script': '\n/usr/sbin/installer -pkg "/Library/Addigy/ansible/packages/Acrobat Reader (2020.9.20063)/AcroRdrDC_2000920063_MUI.pkg" -target /\n'
-//   'software_icon': {
-//     user_email: string,
-//     'content_type': 'image/jpeg'
-//     'size': 5666
-//     'filename': 'acrobatDC.jpeg'
-//     'provider': 'cloud-storaßge'
-//     'created': '2020-07-22T15:32:48.19Z'
-//     'md5_hash': '6b104b4296f7e4baff2a79f5f4cdb1a6'
-//     'id': 'd35a7628-7e95-f3b7-ae2c-bd7ae3c85047'
-//     'orgid': '52d49479-0a96-4027-8673-2baaa12379cf'
-//   },
-//   profiles: object[]
-
-// }
+interface AddigyDownload {
+  user_email: string
+  content_type: string
+  size: number
+  filename: string
+  provider: string
+  created: string
+  md5_hash: string
+  id: string
+  orgid: string
+}
 
 /*
  * Various combinations of the auth token, organization ID, and email address of the callee are
@@ -643,13 +616,14 @@ class Addigy {
     }
   }
 
-  async createSmartSoftware (authObject: IAddigyInternalAuthObject, baseIdentifier: string, version: string, downloads: string[], conditionScript: string, installationScript: string, removalScript: string, description?: string, profiles?: object, icon?: object): Promise<object> {
+  async createSmartSoftware (authObject: IAddigyInternalAuthObject, baseIdentifier: string, version: string, downloads: AddigyDownload[], conditionScript: string, installationScript: string, removalScript: string, description?: string, profiles?: object, softwareIcon?: AddigyDownload): Promise<object> {
     const customSoftware: any = await this.createCustomSoftware(baseIdentifier, version, downloads, installationScript, conditionScript, removalScript)
     await this.copySoftwareInstructionToStage(authObject, customSoftware.instructionId)
 
     customSoftware.description = description
-    if (typeof icon !== 'undefined') {
-      customSoftware.icon = icon
+    if (typeof softwareIcon !== 'undefined') {
+      customSoftware.software_icon = softwareIcon
+      customSoftware.icon = ''
     }
 
     if (typeof profiles !== 'undefined') {
@@ -661,7 +635,7 @@ class Addigy {
     return updateSoftwareRes
   }
 
-  async createCustomSoftware (baseIdentifier: string, version: string, downloads: string[], installationScript: string, conditionScript: string, removalScript: string): Promise<object[]> {
+  async createCustomSoftware (baseIdentifier: string, version: string, downloads: AddigyDownload[], installationScript: string, conditionScript: string, removalScript: string): Promise<object[]> {
     const postBody: any = {
       base_identifier: baseIdentifier,
       version: version,
