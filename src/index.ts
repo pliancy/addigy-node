@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/default-param-last */
+/* eslint-disable no-useless-catch */
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
 
 enum AlertStatus {
-    Acknowledged = 'Acknowledged',
-    Resolved = 'Resolved',
-    Unattended = 'Unattended'
+  Acknowledged = 'Acknowledged',
+  Resolved = 'Resolved',
+  Unattended = 'Unattended'
 }
 
 enum UserRoles {
@@ -27,6 +29,45 @@ interface IAddigyConfig {
   adminUsername?: string
   adminPassword?: string
 }
+
+// interface customSoftwareStage {
+//   label: string
+//   public: boolean
+//   run_on_success: boolean
+//   version: string
+//   category: string
+//   provider: 'ansible-custom-software'
+//   condition: string
+//   base_identifier: 'Acrobat Reader'
+//   editid: 'c95fa2ac-b371-4bf8-944b-fd970a608fa4'
+//   downloads: object[]
+//   policy_restricted: boolean
+//   remove_script: string
+//   instructionId: string
+//   type: string
+//   commands: []
+//   icon: string
+//   orgid: string
+//   name: string,
+//   description: string
+//   'status_on_skipped': 'finished'
+//   user_email: string,
+//   'identifier': 'Acrobat Reader-3995dc02-eef6-444d-800d-80147bf21719'
+//   'installation_script': '\n/usr/sbin/installer -pkg "/Library/Addigy/ansible/packages/Acrobat Reader (2020.9.20063)/AcroRdrDC_2000920063_MUI.pkg" -target /\n'
+//   'software_icon': {
+//     user_email: string,
+//     'content_type': 'image/jpeg'
+//     'size': 5666
+//     'filename': 'acrobatDC.jpeg'
+//     'provider': 'cloud-storaßge'
+//     'created': '2020-07-22T15:32:48.19Z'
+//     'md5_hash': '6b104b4296f7e4baff2a79f5f4cdb1a6'
+//     'id': 'd35a7628-7e95-f3b7-ae2c-bd7ae3c85047'
+//     'orgid': '52d49479-0a96-4027-8673-2baaa12379cf'
+//   },
+//   profiles: object[]
+
+// }
 
 /*
  * Various combinations of the auth token, organization ID, and email address of the callee are
@@ -61,7 +102,7 @@ class Addigy {
 
   async getPolicyInstructions (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/instructions?provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
@@ -73,7 +114,7 @@ class Addigy {
 
   async createPolicyInstructions (policyId: string, instructionId: string): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/instructions`,
         {
           headers: this.reqHeaders,
@@ -92,7 +133,7 @@ class Addigy {
 
   async deletePolicyInstructions (policyId: string, instructionId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/instructions?policy_id=${policyId}&instruction_id=${instructionId}&provider=${provider}`,
         {
           headers: this.reqHeaders,
@@ -111,7 +152,7 @@ class Addigy {
 
   async getOnlineDevices (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/devices/online`,
         { headers: this.reqHeaders }
       )
@@ -123,7 +164,7 @@ class Addigy {
 
   async getDevices (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/devices`,
         { headers: this.reqHeaders }
       )
@@ -135,7 +176,7 @@ class Addigy {
 
   async getPolicyDevices (policyId: string): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/devices?policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
@@ -146,13 +187,13 @@ class Addigy {
   }
 
   async updateDevicePolicy (policyId: string, agentId: string): Promise<object[]> {
-    let postBody: any = {
-      'policy_id': policyId,
-      'agent_id': agentId
+    const postBody: any = {
+      policy_id: policyId,
+      agent_id: agentId
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/devices`,
         {
           headers: {
@@ -181,7 +222,7 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/alerts?page=${page}&per_page=${pageLength}` + statusUri,
         { headers: this.reqHeaders }
       )
@@ -197,7 +238,7 @@ class Addigy {
 
   async getPolicies (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies`,
         { headers: this.reqHeaders }
       )
@@ -209,7 +250,7 @@ class Addigy {
 
   async getPolicyDetails (policyId: string, provider: string = 'ansible-profile'): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies/details?provider=${provider}&policy_id=${policyId}`,
         { headers: this.reqHeaders }
       )
@@ -220,24 +261,24 @@ class Addigy {
   }
 
   async createPolicy (name: string, parentId?: string, icon?: string, color?: string): Promise<object[]> {
-    let postBody: any = {
+    const postBody: any = {
       name: name
     }
 
     if (icon !== undefined) {
-      postBody['icon'] = icon
+      postBody.icon = icon
     }
 
     if (color !== undefined) {
-      postBody['color'] = color
+      postBody.color = color
     }
 
     if (parentId !== undefined) {
-      postBody['parent_id'] = parentId
+      postBody.parent_id = parentId
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/policies`,
         {
           method: 'POST',
@@ -257,7 +298,7 @@ class Addigy {
 
   async getMaintenance (page: number = 1, pageLenth: number = 10): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/maintenance?page=${page}&per_page=${pageLenth}`,
         { headers: this.reqHeaders }
       )
@@ -273,7 +314,7 @@ class Addigy {
 
   async getInstalledApplications (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/applications`,
         { headers: this.reqHeaders }
       )
@@ -294,7 +335,7 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/profiles` + instructionUri,
         { headers: this.reqHeaders }
       )
@@ -305,13 +346,13 @@ class Addigy {
   }
 
   async createProfile (name: string, payloads: object[]): Promise<object[]> {
-    let postBody: any = {
-      'name': name,
-      'payloads': payloads
+    const postBody: any = {
+      name: name,
+      payloads: payloads
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
           headers: this.reqHeaders,
@@ -327,13 +368,13 @@ class Addigy {
   }
 
   async updateProfile (instructionId: string, payloads: object[]): Promise<object[]> {
-    let postBody: any = {
-      'instruction_id': instructionId,
-      'payloads': payloads
+    const postBody: any = {
+      instruction_id: instructionId,
+      payloads: payloads
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
           headers: this.reqHeaders,
@@ -349,12 +390,12 @@ class Addigy {
   }
 
   async deleteProfile (instructionId: string): Promise<object[]> {
-    let postBody: any = {
-      'instruction_id': instructionId
+    const postBody: any = {
+      instruction_id: instructionId
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/profiles`,
         {
           headers: this.reqHeaders,
@@ -374,13 +415,13 @@ class Addigy {
   //
 
   async runCommand (agentIds: string[], command: string): Promise<object[]> {
-    let postBody: any = {
-      'agent_ids': agentIds,
-      'command': command
+    const postBody: any = {
+      agent_ids: agentIds,
+      command: command
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/devices/commands`,
         {
           headers: this.reqHeaders,
@@ -397,7 +438,7 @@ class Addigy {
 
   async getCommandOutput (actionId: string, agentId: string): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/devices/output?action_id=${actionId}&agentid=${agentId}`,
         { headers: this.reqHeaders }
       )
@@ -413,7 +454,7 @@ class Addigy {
 
   async getPublicSoftware (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/catalog/public`,
         { headers: this.reqHeaders }
       )
@@ -429,7 +470,7 @@ class Addigy {
 
   async getCustomSoftware (): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/custom-software`,
         { headers: this.reqHeaders }
       )
@@ -441,7 +482,7 @@ class Addigy {
 
   async getCustomSoftwareAllVersions (softwareId: string): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/custom-software?identifier=${softwareId}`,
         { headers: this.reqHeaders }
       )
@@ -453,7 +494,7 @@ class Addigy {
 
   async getCustomSoftwareSpecificVersion (instructionId: string): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `${this.domain}/custom-software?instructionid=${instructionId}`,
         { headers: this.reqHeaders }
       )
@@ -472,8 +513,8 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(
-        `https://file-manager-prod.addigy.com/api/upload/url`,
+      const res = await this._addigyRequest(
+        'https://file-manager-prod.addigy.com/api/upload/url',
         {
           headers: headers
         }
@@ -490,7 +531,7 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(`${uploadUrl}`, {
+      const res = await this._addigyRequest(`${uploadUrl}`, {
         headers: headers,
         body: file,
         method: 'PUT'
@@ -501,19 +542,124 @@ class Addigy {
     }
   }
 
-  async createCustomSoftware (baseIdentifier: string, version: string, downloads: string[], installationScript: string, condition: string, removeScript: string): Promise<object[]> {
-    let postBody: any = {
-      'base_identifier': baseIdentifier,
-      'version': version,
-      'downloads': downloads,
-      'installation_script': installationScript,
-      'condition': condition,
-      'remove_script': removeScript
+  async getFileInfo (
+    authObject: IAddigyInternalAuthObject,
+    fileId: string
+  ): Promise<object[]> {
+    try {
+      const res = await this._addigyRequest(
+        `https://app-prod.addigy.com/api/filebuilder/pkg/info?id=${fileId}`,
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'GET'
+        }
+      )
+      return JSON.parse(res.body)
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async copySoftwareInstructionToStage (
+    authObject: IAddigyInternalAuthObject,
+    instructionId: string
+  ): Promise<object[]> {
+    try {
+      const res = await this._addigyRequest(
+        'https://prod.addigy.com/copy_instruction_to_stage/',
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken}`
+          },
+          method: 'POST',
+          body: { instructionid: instructionId },
+          json: true
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async updateSoftwareInstruction (
+    authObject: IAddigyInternalAuthObject,
+    postBody: object
+  ): Promise<object[]> {
+    try {
+      const res = await this._addigyRequest(
+        'https://app-prod.addigy.com/api/software/update_staged_instruction/',
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'POST',
+          body: postBody,
+          json: true
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async confirmSoftwareInstruction (
+    authObject: IAddigyInternalAuthObject,
+    instructionId: string
+  ): Promise<object[]> {
+    try {
+      const res = await this._addigyRequest(
+        `https://app-prod.addigy.com/api/software/confirm_staged_instruction?instructionid=${instructionId}`,
+        {
+          headers: {
+            Cookie: `auth_token=${authObject.authToken};`
+          },
+          method: 'GET'
+        }
+      )
+      return res.body
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async createSmartSoftware (authObject: IAddigyInternalAuthObject, baseIdentifier: string, version: string, downloads: string[], conditionScript: string, installationScript: string, removalScript: string, description?: string, profiles?: object, icon?: object): Promise<object> {
+    const customSoftware: any = await this.createCustomSoftware(baseIdentifier, version, downloads, installationScript, conditionScript, removalScript)
+    console.log(customSoftware)
+    console.log(customSoftware.instructionId)
+    const ins = await this.copySoftwareInstructionToStage(authObject, customSoftware.instructionId)
+    console.log('ins ', ins)
+    customSoftware.description = description
+    if (typeof icon !== 'undefined') {
+      customSoftware.icon = icon
+    }
+
+    if (typeof profiles !== 'undefined') {
+      customSoftware.profiles = profiles
+    }
+
+    const updateSoftwareRes = await this.updateSoftwareInstruction(authObject, customSoftware)
+    console.log('updateSoftwareRes', updateSoftwareRes)
+    await this.confirmSoftwareInstruction(authObject, customSoftware.instructionId)
+    return updateSoftwareRes
+  }
+
+  async createCustomSoftware (baseIdentifier: string, version: string, downloads: string[], installationScript: string, conditionScript: string, removalScript: string): Promise<object[]> {
+    const postBody: any = {
+      base_identifier: baseIdentifier,
+      version: version,
+      downloads: downloads,
+      installation_script: installationScript,
+      condition: conditionScript,
+      remove_script: removalScript
     }
 
     try {
-      let res = await this._addigyRequest(
-        `${this.domain}/custom_software`,
+      const res = await this._addigyRequest(
+        `${this.domain}/custom-software`,
         {
           headers: this.reqHeaders,
           method: 'POST',
@@ -534,7 +680,7 @@ class Addigy {
 
   async getUsers (authObject: IAddigyInternalAuthObject): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/account',
         {
           headers: {
@@ -550,7 +696,7 @@ class Addigy {
   }
 
   async createUser (authObject: IAddigyInternalAuthObject, email: string, name: string, policies: string[] = [], role: UserRoles | string, phone?: string): Promise<object[]> {
-    let postBody: any = {
+    const postBody: any = {
       name: name,
       email: email,
       policies: policies,
@@ -558,11 +704,11 @@ class Addigy {
     }
 
     if (phone !== undefined) {
-      postBody['phone'] = phone
+      postBody.phone = phone
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/cloud/users/user',
         {
           headers: {
@@ -580,7 +726,7 @@ class Addigy {
   }
 
   async updateUser (authObject: IAddigyInternalAuthObject, email: string, name: string, policies: string[] = [], role: string, phone?: string): Promise<object[]> {
-    let postBody: any = {
+    const postBody: any = {
       id: '',
       uid: '', // this has to be blank on th PUT for some reason
       name: name,
@@ -593,18 +739,18 @@ class Addigy {
     }
 
     if (phone !== undefined) {
-      postBody['phone'] = phone
+      postBody.phone = phone
     }
 
     try {
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers(authObject)
-      let user: any = users.find(element => element.email === email)
+      const users: any[] = await this.getUsers(authObject)
+      const user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
-      postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
+      postBody.id = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(user.email)}`,
         {
           headers: {
@@ -624,11 +770,11 @@ class Addigy {
   async deleteUser (authObject: IAddigyInternalAuthObject, email: string): Promise<object[]> {
     try {
       // find userId that corresponds to the provided email
-      let users: Array<any> = await this.getUsers(authObject)
-      let user: any = users.find(element => element.email === email)
+      const users: any[] = await this.getUsers(authObject)
+      const user: any = users.find(element => element.email === email)
       if (!user) throw new Error(`No user with email ${email} exists.`)
 
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
@@ -646,7 +792,7 @@ class Addigy {
 
   async getBillingData (authObject: IAddigyInternalAuthObject): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/billing/get_chargeover_billing_data',
         {
           headers: {
@@ -665,7 +811,7 @@ class Addigy {
 
   async getApiIntegrations (authObject: IAddigyInternalAuthObject): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://prod.addigy.com/accounts/api/keys/get/',
         {
           headers: {
@@ -683,12 +829,12 @@ class Addigy {
   }
 
   async createApiIntegration (authObject: IAddigyInternalAuthObject, name: string): Promise<object> {
-    let postBody: any = {
+    const postBody: any = {
       name
     }
     console.log(JSON.stringify(postBody))
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/integrations/keys',
         {
           headers: {
@@ -707,7 +853,7 @@ class Addigy {
 
   async deleteApiIntegration (authObject: IAddigyInternalAuthObject, objectId: string): Promise<object> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         `https://app-prod.addigy.com/api/integrations/keys?id=${objectId}`,
         {
           headers: {
@@ -724,15 +870,15 @@ class Addigy {
 
   async getScreenconnectLinks (authObject: IAddigyInternalAuthObject, sessionId: string, agentId?: string): Promise<object[]> {
     // in most (all?) cases tested, the agentId and sessionId are identical, but they are independently passed in the API call
-    agentId = agentId ? agentId : sessionId
+    agentId = agentId ?? sessionId
 
-    let postBody = {
-      'sessionId': sessionId,
-      'agentid': agentId
+    const postBody = {
+      sessionId: sessionId,
+      agentid: agentId
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/devices/screenconnect/links',
         {
           headers: {
@@ -752,17 +898,17 @@ class Addigy {
   }
 
   async createKernelExtensionPolicy (authObject: IAddigyInternalAuthObject, name: string, allowOverrides: boolean = false, teamIds?: string[], bundleIds?: object): Promise<object> {
-    let payload: any = {}
-    let payloadUUID = uuidv4()
-    let groupUUID = uuidv4()
+    const payload: any = {}
+    const payloadUUID = uuidv4()
+    const groupUUID = uuidv4()
     if (teamIds) {
-      payload['allowed_team_identifiers'] = teamIds
+      payload.allowed_team_identifiers = teamIds
     }
     if (bundleIds) {
-      payload['allowed_kernel_extensions'] = bundleIds
+      payload.allowed_kernel_extensions = bundleIds
     }
-    let postBody = {
-      'payloads': [{
+    const postBody = {
+      payloads: [{
         addigy_payload_type: 'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy',
         payload_type: 'com.apple.syspolicy.kernel-extension-policy',
         payload_version: 1,
@@ -777,7 +923,7 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
         {
           headers: {
@@ -796,7 +942,7 @@ class Addigy {
 
   async getFileVaultKeys (authObject: IAddigyInternalAuthObject): Promise<object[]> {
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://prod.addigy.com/get_org_filevault_keys/',
         {
           headers: {
@@ -821,7 +967,7 @@ class Addigy {
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         url,
         {
           headers: {
@@ -839,14 +985,14 @@ class Addigy {
   }
 
   async getAuthObject (): Promise<IAddigyInternalAuthObject> {
-    let postBody: any = {
-      'username': this.config.adminUsername,
-      'password': this.config.adminPassword
+    const postBody: any = {
+      username: this.config.adminUsername,
+      password: this.config.adminPassword
     }
 
     try {
-      if (!this.config.adminUsername || !this.config.adminPassword) throw new Error('The function you are using hits Addigy\'s internal API, but no username or password was provided in the constructor. Please fill out the adminUsername and adminPassword parameters.')
-      let res = await this._addigyRequest(
+      if (typeof this.config.adminUsername === 'undefined' || typeof this.config.adminPassword === 'undefined') throw new Error('The function you are using hits Addigy\'s internal API, but no username or password was provided in the constructor. Please fill out the adminUsername and adminPassword parameters.')
+      const res = await this._addigyRequest(
         'https://prod.addigy.com/signin/',
         {
           method: 'POST',
@@ -855,10 +1001,10 @@ class Addigy {
         }
       )
 
-      let authObject = {
-        'orgId': res.body.orgid,
-        'authToken': res.body.authtoken,
-        'emailAddress': res.body.email
+      const authObject = {
+        orgId: res.body.orgid,
+        authToken: res.body.authtoken,
+        emailAddress: res.body.email
       }
 
       return authObject
@@ -868,12 +1014,12 @@ class Addigy {
   }
 
   async getImpersonationAuthObject (authObject: IAddigyInternalAuthObject, orgId: string): Promise<IAddigyInternalAuthObject> {
-    let postBody: any = {
-      'orgid': orgId
+    const postBody: any = {
+      orgid: orgId
     }
 
     try {
-      let res = await this._addigyRequest(
+      const res = await this._addigyRequest(
         'https://prod.addigy.com/impersonate_org/',
         {
           headers: {
@@ -885,10 +1031,10 @@ class Addigy {
         }
       )
 
-      let impersonationAuthObject = {
-        'orgId': orgId,
-        'authToken': res.headers['set-cookie'].find((e: string) => e.includes('auth_token') && !e.includes('original_auth_token')).split('auth_token=')[1].split(';')[0],
-        'emailAddress': authObject.emailAddress
+      const impersonationAuthObject = {
+        orgId: orgId,
+        authToken: res.headers['set-cookie'].find((e: string) => e.includes('auth_token') && !e.includes('original_auth_token')).split('auth_token=')[1].split(';')[0],
+        emailAddress: authObject.emailAddress
       }
 
       return impersonationAuthObject
@@ -899,7 +1045,7 @@ class Addigy {
 
   private async _addigyRequest (url: string, options: any): Promise<any> {
     try {
-      let res = await got(url, options)
+      const res = await got(url, options)
       return res
     } catch (err) {
       throw err

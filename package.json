@@ -37,13 +37,14 @@
     "form-data": "^2.5.1",
     "fs": "0.0.1-security",
     "got": "^8.3.2",
-    "uuid": "^7.0.3"
+    "uuid": "^7.0.3",
+    "eslint": "^7.6.0"
   },
   "devDependencies": {
     "@types/got": "^8.3.5",
     "@types/jest": "^23.1.1",
     "@types/node": "^10.14.18",
-    "eslint": "^5.16.0",
+    "eslint": "^7.6.0",
     "gh-pages": "^1.2.0",
     "husky": "^0.14.3",
     "jest": "^23.1.0",
@@ -53,6 +54,15 @@
     "tslint": "^5.20.0",
     "tslint-config-standard": "^7.1.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "eslint-config-standard-with-typescript": "^16.0.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "@types/eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-formatter-pretty": "^4.0.0"
   }
 }
