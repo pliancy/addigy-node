@@ -538,7 +538,8 @@ class Addigy {
         'https://app-prod.addigy.com/api/account',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'GET'
         }
@@ -566,7 +567,8 @@ class Addigy {
         'https://app-prod.addigy.com/api/cloud/users/user',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'POST',
           json: true,
@@ -608,7 +610,8 @@ class Addigy {
         `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(user.email)}`,
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'PUT',
           json: true,
@@ -632,7 +635,8 @@ class Addigy {
         `https://app-prod.addigy.com/api/cloud/users/user/${user.id}?user_email=${encodeURIComponent(email)}`,
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'DELETE'
         }
@@ -651,6 +655,7 @@ class Addigy {
         {
           headers: {
             Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com',
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -670,6 +675,7 @@ class Addigy {
         {
           headers: {
             Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com',
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -692,7 +698,8 @@ class Addigy {
         'https://app-prod.addigy.com/api/integrations/keys',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'POST',
           json: true,
@@ -711,7 +718,8 @@ class Addigy {
         `https://app-prod.addigy.com/api/integrations/keys?id=${objectId}`,
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'DELETE'
         }
@@ -737,6 +745,7 @@ class Addigy {
         {
           headers: {
             Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com',
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -781,7 +790,8 @@ class Addigy {
         'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'POST',
           json: true,
@@ -800,7 +810,8 @@ class Addigy {
         'https://prod.addigy.com/get_org_filevault_keys/',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'GET'
         }
@@ -826,6 +837,7 @@ class Addigy {
         {
           headers: {
             Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com',
             email: authObject.emailAddress,
             orgid: authObject.orgId
           },
@@ -877,7 +889,8 @@ class Addigy {
         'https://prod.addigy.com/impersonate_org/',
         {
           headers: {
-            Cookie: `auth_token=${authObject.authToken};`
+            Cookie: `auth_token=${authObject.authToken};`,
+            origin: 'https://app-prod.addigy.com'
           },
           method: 'GET',
           json: true,
