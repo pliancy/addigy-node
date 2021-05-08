@@ -2,6 +2,7 @@
 .vscode
 _scratch
 lib
+dist
 docs
 .DS_Store
 
