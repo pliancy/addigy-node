@@ -506,7 +506,7 @@ class Addigy {
         }
 
         try {
-            let res = await this._addigyRequest(`${this.domain}/custom_software`, {
+            let res = await this._addigyRequest(`${this.domain}/custom-software`, {
                 headers: this.reqHeaders,
                 method: 'POST',
                 json: postBody,
