@@ -1,0 +1,56 @@
+name: CI
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 15
+          - 14
+          - 13
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      # checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+
+      # Install node from package.json volta config
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      # Install packages
+      - name: Install NPM Packages
+        run: yarn
+
+      # - name: Run Linting and Formatting
+      #   uses: wearerequired/lint-action@v1
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     eslint: true
+      #     eslint_extensions: js,jsx,ts,tsx
+      #     prettier: true
+
+      # Lint
+      - name: Run Linting
+        run: yarn lint
+
+      # Tests
+      - name: Run Jest Tests
+        run: yarn test:ci
+        env:
+          CI: true
+
+      - name: Build
+        run: yarn build:ci
