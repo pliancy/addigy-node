@@ -1,5 +1,16 @@
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
+import {
+    Extension,
+    IAddigyConfig,
+    IAddigyInternalAuthObject,
+    KernalExtensionPayload,
+    PPPCInput,
+    PPPCPayload,
+    SystemExtensionPayload,
+} from './types'
+
+export * from './types'
 
 enum AlertStatus {
     Acknowledged = 'Acknowledged',
@@ -13,33 +24,7 @@ enum UserRoles {
     User = 'user',
 }
 
-/**
- * The Config for the Addigy class
- * This interface allows utilization of Addigy's internal API by using credentials of an actual user account
- * @export
- * @interface IAddigyConfig
- */
-interface IAddigyConfig {
-    /** the API credentials from Addigy */
-    clientId: string
-    clientSecret: string
-    /** user account credentials with owner/power user role */
-    adminUsername?: string
-    adminPassword?: string
-}
-
-/*
- * Various combinations of the auth token, organization ID, and email address of the callee are
- * required for different calls to Addigy's internal API endpoints. To make things easier,
- * they are all packaged together into a single authentication object
- */
-interface IAddigyInternalAuthObject {
-    orgId: string
-    authToken: string
-    emailAddress: string
-}
-
-class Addigy {
+export class Addigy {
     config: IAddigyConfig
     domain: string
     reqHeaders: any
@@ -770,35 +755,35 @@ class Addigy {
     async createKernelExtensionPolicy(
         authObject: IAddigyInternalAuthObject,
         name: string,
-        allowOverrides: boolean = false,
-        teamIds?: string[],
-        bundleIds?: object,
-    ): Promise<object> {
-        let payload: any = {}
+        allowOverrides: boolean,
+        kernalExtensions: { teamIdentifiers?: string[]; kernalExtensions?: Extension[] },
+    ): Promise<any> {
         let payloadUUID = uuidv4()
         let groupUUID = uuidv4()
-        if (teamIds) {
-            payload['allowed_team_identifiers'] = teamIds
+
+        const payload: KernalExtensionPayload = {
+            addigy_payload_type:
+                'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy',
+            payload_type: 'com.apple.syspolicy.kernel-extension-policy',
+            payload_version: 1,
+            payload_identifier: `com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy.${groupUUID}`,
+            payload_uuid: payloadUUID,
+            payload_group_id: groupUUID,
+            payload_enabled: true,
+            payload_display_name: name,
+            allow_user_overrides: allowOverrides,
+            allowed_kernel_extensions: {},
+            allowed_team_identifiers: [],
         }
-        if (bundleIds) {
-            payload['allowed_kernel_extensions'] = bundleIds
+        if (kernalExtensions.kernalExtensions?.length) {
+            kernalExtensions.kernalExtensions.forEach((e) => {
+                payload.allowed_kernel_extensions[e.teamIdentifier] = e.bundleIdentifiers
+            })
         }
-        let postBody = {
-            payloads: [
-                {
-                    addigy_payload_type:
-                        'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy',
-                    payload_type: 'com.apple.syspolicy.kernel-extension-policy',
-                    payload_version: 1,
-                    payload_identifier: `com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy.${groupUUID}`,
-                    payload_uuid: payloadUUID,
-                    payload_group_id: groupUUID,
-                    payload_enabled: true,
-                    payload_display_name: name,
-                    allow_user_overrides: allowOverrides,
-                    ...payload,
-                },
-            ],
+        if (kernalExtensions.teamIdentifiers?.length) {
+            kernalExtensions.teamIdentifiers.forEach((e) => {
+                payload.allowed_team_identifiers.push(e)
+            })
         }
 
         try {
@@ -810,13 +795,147 @@ class Addigy {
                         origin: 'https://app-prod.addigy.com',
                     },
                     method: 'POST',
-                    json: postBody,
+                    json: { payloads: [payload] },
                 },
             )
             return res.body
         } catch (err) {
             throw err
         }
+    }
+
+    async createSystemExtensionPolicy(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        allowOverrides: boolean,
+        systemExtensions: {
+            allowedSystemExtensions?: Extension[]
+            allowedSystemExtensionTypes?: Extension[]
+            allowedTeamIdentifiers?: string[]
+        },
+    ): Promise<object> {
+        const groupUUID = uuidv4()
+
+        const payload: SystemExtensionPayload = {
+            addigy_payload_type:
+                'com.addigy.syspolicy.system-extension-policy.com.apple.system-extension-policy',
+            payload_type: 'com.apple.system-extension-policy',
+            payload_version: 1,
+            payload_identifier: `com.addigy.syspolicy.system-extension-policy.com.apple.system-extension-policy.${groupUUID}`,
+            payload_uuid: uuidv4(),
+            payload_group_id: groupUUID,
+            payload_enabled: true,
+            payload_display_name: name,
+            allowed_system_extensions: {},
+            allowed_system_extensions_types: {},
+            allowed_team_identifiers: [],
+            allow_user_overrides: allowOverrides,
+        }
+        if (systemExtensions.allowedSystemExtensions?.length) {
+            systemExtensions.allowedSystemExtensions.forEach((e) => {
+                payload.allowed_system_extensions[e.teamIdentifier] = e.bundleIdentifiers
+            })
+        }
+        if (systemExtensions.allowedSystemExtensionTypes?.length) {
+            systemExtensions.allowedSystemExtensionTypes.forEach((e) => {
+                payload.allowed_system_extensions_types[e.teamIdentifier] = e.bundleIdentifiers
+            })
+        }
+        if (systemExtensions.allowedTeamIdentifiers?.length) {
+            systemExtensions.allowedTeamIdentifiers.forEach((e) => {
+                payload.allowed_team_identifiers.push(e)
+            })
+        }
+        console.log(payload)
+        try {
+            let res = await this._addigyRequest(
+                'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'POST',
+                    json: { payloads: [payload] },
+                },
+            )
+            return res.body
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async createPPPCPolicy(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        pppcPolicy: PPPCInput,
+    ): Promise<any> {
+        const groupUUID = uuidv4()
+        const payload: PPPCPayload = {
+            addigy_payload_type:
+                'com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy',
+            payload_type: 'com.apple.TCC.configuration-profile-policy',
+            payload_display_name: name,
+            payload_group_id: groupUUID,
+            payload_version: 1,
+            payload_identifier: `com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy.${groupUUID}`,
+            payload_uuid: uuidv4(),
+            services: {
+                accessibility: [],
+                address_book: [],
+                apple_events: [],
+                calendar: [],
+                camera: [],
+                microphone: [],
+                photos: [],
+                post_event: [],
+                reminders: [],
+                system_policy_all_files: [],
+                system_policy_sys_admin_files: [],
+                file_provider_presence: [],
+                listen_event: [],
+                media_library: [],
+                screen_capture: [],
+                speech_recognition: [],
+                system_policy_desktop_folder: [],
+                system_policy_documents_folder: [],
+                system_policy_downloads_folder: [],
+                system_policy_network_volumes: [],
+                system_policy_removable_volumes: [],
+            },
+        }
+
+        pppcPolicy.service.forEach((e) => {
+            const service = {
+                allowed: e.allowed ?? false,
+                authorization: '',
+                code_requirement: pppcPolicy.code_requirement,
+                comment: '',
+                identifier_type: e.identifier_type,
+                identifier: pppcPolicy.identifier,
+                static_code: e.static_code ?? false,
+                predefined_app: null,
+                manual_selection: true,
+                rowId: uuidv4(),
+            }
+            if (e.service === 'screen_capture' && e.authorization) {
+                service.authorization = e.authorization
+            }
+            payload.services[e.service].push(service as never)
+        })
+
+        const res = await this._addigyRequest(
+            'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'POST',
+                json: { payloads: [payload] },
+            },
+        )
+        return res.body
     }
 
     async getFileVaultKeys(authObject: IAddigyInternalAuthObject): Promise<object[]> {
@@ -936,5 +1055,3 @@ class Addigy {
         }
     }
 }
-
-export = Addigy
