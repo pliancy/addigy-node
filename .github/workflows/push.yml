@@ -34,23 +34,11 @@ jobs:
       - name: Install NPM Packages
         run: yarn
 
-      # - name: Run Linting and Formatting
-      #   uses: wearerequired/lint-action@v1
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     eslint: true
-      #     eslint_extensions: js,jsx,ts,tsx
-      #     prettier: true
 
       # Lint
       - name: Run Linting
         run: yarn lint
 
-      # Tests
-      - name: Run Jest Tests
-        run: yarn test:ci
-        env:
-          CI: true
 
       - name: Build
         run: yarn build:ci
