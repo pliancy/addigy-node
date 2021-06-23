@@ -846,7 +846,7 @@ export class Addigy {
                 payload.allowed_team_identifiers.push(e)
             })
         }
-        console.log(payload)
+
         try {
             let res = await this._addigyRequest(
                 'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
@@ -907,7 +907,7 @@ export class Addigy {
 
         pppcPolicy.service.forEach((e) => {
             const service = {
-                allowed: e.allowed ?? false,
+                allowed: false,
                 authorization: '',
                 code_requirement: pppcPolicy.code_requirement,
                 comment: '',
@@ -921,6 +921,7 @@ export class Addigy {
             if (e.service === 'screen_capture' && e.authorization) {
                 service.authorization = e.authorization
             }
+            if (e.service !== 'screen_capture') service.allowed = e.allowed
             payload.services[e.service].push(service as never)
         })
 

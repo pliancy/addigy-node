@@ -122,14 +122,13 @@ export interface PPPCServiceInput {
         | 'system_policy_downloads_folder'
         | 'system_policy_network_volumes'
         | 'system_policy_removable_volumes'
-    allowed?: boolean
+    allowed: boolean
     static_code?: Boolean
     identifier_type: 'bundleID' | 'path'
 }
 
 export interface PPPCScreenCaptureServiceInput {
     service: 'screen_capture'
-    allowed?: boolean
     authorization: 'AllowStandardUserToSetSystemService' | 'Deny'
     static_code?: Boolean
     identifier_type: 'bundleID' | 'path'
