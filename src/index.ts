@@ -752,11 +752,26 @@ export class Addigy {
         }
     }
 
+    /**
+     *
+     * @param name
+     * Name of the Policy
+     * @param allowOverrides
+     * Users can approve additional kernel extensions not explicitly allowed by configuration profiles.
+     * @param kernalExtensions
+     * An Object to pass through Team Identifiers and Kernal Extensions
+     * allowedTeamIdentifiers: List of Team Identifiers that define which validly signed kernel extensions will be allowed to load
+     * allowedKernalExtensions: Bundle identifer and team identifer of kernel extension that will be allowed. Use An empty team identifier for unsigned legacy kernel extensions
+     */
+
     async createKernelExtensionPolicy(
         authObject: IAddigyInternalAuthObject,
         name: string,
         allowOverrides: boolean,
-        kernalExtensions: { teamIdentifiers?: string[]; kernalExtensions?: Extension[] },
+        kernalExtensions: {
+            allowedTeamIdentifiers?: string[]
+            allowedKernalExtensions?: Extension[]
+        },
     ): Promise<any> {
         let payloadUUID = uuidv4()
         let groupUUID = uuidv4()
@@ -775,13 +790,13 @@ export class Addigy {
             allowed_kernel_extensions: {},
             allowed_team_identifiers: [],
         }
-        if (kernalExtensions.kernalExtensions?.length) {
-            kernalExtensions.kernalExtensions.forEach((e) => {
+        if (kernalExtensions.allowedKernalExtensions?.length) {
+            kernalExtensions.allowedKernalExtensions.forEach((e) => {
                 payload.allowed_kernel_extensions[e.teamIdentifier] = e.bundleIdentifiers
             })
         }
-        if (kernalExtensions.teamIdentifiers?.length) {
-            kernalExtensions.teamIdentifiers.forEach((e) => {
+        if (kernalExtensions.allowedTeamIdentifiers?.length) {
+            kernalExtensions.allowedTeamIdentifiers.forEach((e) => {
                 payload.allowed_team_identifiers.push(e)
             })
         }
@@ -803,6 +818,19 @@ export class Addigy {
             throw err
         }
     }
+
+    /**
+     *
+     * @param name
+     * Name of the Policy
+     * @param allowOverrides
+     * Users can approve additional kernel extensions not explicitly allowed by configuration profiles.
+     * @param systemExtensions
+     * An Object to pass through Allowed System Extensions, Allowed System Extension Types and Allowed Team Identifiers
+     * allowedSystemExtensions: A dictionary of system extensions that will always be approved on the machine. The dictionary maps the team identifiers (keys) to arrays of bundle identifiers, where the bundle identifier defines the system extension to be installed.
+     * allowedSystemExtensionTypes: A dictionary mapping a team identifier to an array of strings, where each string is a type of system extension that may be installed for that team identifier
+     * allowedTeamIdentifiers: An array, of team identifiers, that defines valid, signed system extensions which are allowed to load. All system extensions signed with any of the specified team identifiers will be considered to be approved.
+     */
 
     async createSystemExtensionPolicy(
         authObject: IAddigyInternalAuthObject,
@@ -865,6 +893,15 @@ export class Addigy {
         }
     }
 
+    /**
+     *
+     * @param name
+     * name of the Policy
+     * @param pppcPolicy
+     * Enter in the identifier, code_requirement and an array of service items the identifier and code requirement will be assigned to
+     * example: {identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [{service: 'address_book', identifier_type: "bundleID", allowed: true}, {service: "screen_capture", identifier_type: "bundleID", authorization: "AllowStandardUserToSetSystemService"}] }
+     */
+
     async createPPPCPolicy(
         authObject: IAddigyInternalAuthObject,
         name: string,
@@ -905,11 +942,11 @@ export class Addigy {
             },
         }
 
-        pppcPolicy.service.forEach((e) => {
+        pppcPolicy.services.forEach((e) => {
             const service = {
                 allowed: false,
                 authorization: '',
-                code_requirement: pppcPolicy.code_requirement,
+                code_requirement: pppcPolicy.codeRequirement,
                 comment: '',
                 identifier_type: e.identifier_type,
                 identifier: pppcPolicy.identifier,

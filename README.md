@@ -141,4 +141,76 @@ let impersonationObject = await myAddigy.getImpersonationAuthObject(
 await myAddigy.getUsers(impersonationObject)
 ```
 
+
+
+**createKernelExtensionPolicy()**
+
+This method allows you to create a Kernal Extension Policy.  This functions requires 4 parameters. The authObject, name of the Policy, allowing overrides, and the kernalExtension object. 
+
+The kernalExtensions object contains two arrays. allowedTeamIdentifers to pass a kernal extension's Team Identifier for approval or the allowedKernalExtensions to pass the Team Identifier and Bundle Identifiers. 
+
+Example: 
+
+```javascript
+const kernalExtensions = { allowedKernalExtensions: [
+    {teamIdentifier: '2JJNSDF9', bundleIdentifiers: ['com.bundle.com'
+      ]
+    }
+  ],
+  allowedTeamIdentifiers: ['3NFJDID', '4JJSISJ'
+  ]
+}
+
+await myAddigy.createKernelExtensionPolicy( authObject, 'Name', true, kernalExtensions)
+
+```
+
+
+
+**createSystemExtensionPolicy()**
+
+This method allows you to create a System Extension Policy.  This functions requires 4 parameters. The authObject, name of the Policy, allowing overrides, and the sytemExtension object. 
+
+The systemExtensions object contains three arrays to pass allowedSystemExtensions, allowedSystemExtensionTypes and allowedTeamIdentifiers.
+
+Example: 
+
+```javascript
+const systemExtensions = [{
+  allowedSystemExtensions: {teamIdentifier: '2JJNSDF9', bundleIdentifiers: ['com.bundle.com'
+    ]
+  }],
+  allowedSystemExtensionTypes: [{teamIdentifier: '3JJNSDF9', bundleIdentifiers: ['com.bundle.com'
+    ]
+  }],
+  allowedTeamIdentifiers: ['3NFJDID', '4JJSISJ'
+  ]
+}
+
+await myAddigy.createSystemExtensionPolicy( authObject, 'Name', true, systemExtensions)
+
+```
+
+
+
+**createPPPCPolicy()**
+
+This method allows you to create a PPPC Policy.  This functions requires 3 parameters. The authObject, name of the Policy, and the pppcPolicy object. 
+
+The pppcPolicy object allows you to pass an identifer and codeRequirement to be mapped an array of services. The services array allowed you to choose and configure the options for each service you want the identifier and codeRequirement to be mapped to. 
+
+```javascript
+const pppcPolicy = {identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [
+    {service: 'address_book', identifier_type: "bundleID", allowed: true
+    },
+    {service: "screen_capture", identifier_type: "bundleID", authorization: "AllowStandardUserToSetSystemService"
+    }
+  ]
+}
+
+await myAddigy.createPPPCPolicy(authObject, 'Name', pppcPolicy)
+```
+
+
+
 Have fun.

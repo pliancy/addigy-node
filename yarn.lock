@@ -546,7 +546,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pliancy/eslint-config-ts@0.0.5":
+"@pliancy/eslint-config-ts@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@pliancy/eslint-config-ts/-/eslint-config-ts-0.0.5.tgz#cfb14eff888552693767910c27be55ba13c70e15"
   integrity sha512-RWKV0SlKdoRP1Mw1WlOhsDKdxDyL4QVUjRxKM/dr9uu348QiCJCnDKZnPjzNPNH51sNiTxtxF4YvPXHKblzIXg==

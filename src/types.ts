@@ -96,8 +96,8 @@ export interface PPPCService {
 
 export interface PPPCInput {
     identifier: string
-    code_requirement: string
-    service: Array<PPPCServiceInput | PPPCScreenCaptureServiceInput>
+    codeRequirement: string
+    services: Array<PPPCServiceInput | PPPCScreenCaptureServiceInput>
 }
 
 export interface PPPCServiceInput {
