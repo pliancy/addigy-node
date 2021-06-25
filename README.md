@@ -19,9 +19,9 @@ npm install addigy
 You must import the package and pass in the `clientId` and `clientSecret` from addigy to the constructor, as so:
 
 ```js
-var Addigy = require('addigy')
+import { Addigy } from 'addigy'
 
-let myAddigy = new Addigy({
+const addigy = new Addigy({
     clientId: '52c6...',
     clientSecret: '8db7...',
 })
@@ -30,11 +30,7 @@ let myAddigy = new Addigy({
 From there, you can call any of the `addigy` package functions (all of which are Promise-based) using `await` or with `=>` notation:
 
 ```js
-var policies
-
-myAddigy.getPolicies().then((response) => {
-    policies = response
-})
+const policies = await addigy.getPolicies()
 ```
 
 The response will be a JSON object or array, like so:
@@ -85,9 +81,9 @@ This wrapper supports some advanced functions such as user management, retreival
 Expand the Constructor's parameters to include the username and password of a user account at the partnr tenant level that has 'Owner' access, as so:
 
 ```js
-var Addigy = require('addigy')
+import { Addigy } from 'addigy'
 
-let myAddigy = new Addigy({
+const addigy = new Addigy({
     clientId: '52c6...',
     clientSecret: '8db7...',
     adminUsername: 'hopefully_a_service_account@example.net',
@@ -95,7 +91,7 @@ let myAddigy = new Addigy({
 })
 ```
 
-From there, call `myAddigy.getAuthObject()` to generate an authentication object that contains an auth token and other information needed by various internal calls. The auth object will look like so:
+From there, call `addigy.getAuthObject()` to generate an authentication object that contains an auth token and other information needed by various internal calls. The auth object will look like so:
 
 ```js
 {
@@ -108,7 +104,7 @@ From there, call `myAddigy.getAuthObject()` to generate an authentication object
 From there, you can pass that auth object to any of the internal API endpoints, like so:
 
 ```js
-myAddigy
+addigy
     .createUser(authObject, 'whateveryouwant@example.com', 'First Last', [], 'user')
     .then((result) => {
         console.log(result)
@@ -121,17 +117,17 @@ myAddigy
 If you are a partner that manages multiple independent Addigy tenants, you can easily run commands against your child tenants by calling the `getImpersonationAuthObject()` function. It will return a new authentication object pertinent to the given tenant that can be used on subsequent calls. An example of the workflow is as follows:
 
 ```js
-let myAddigy = new Addigy({
+const addigy = new Addigy({
     clientId: '52c6...',
     clientSecret: '8db7...',
     adminUsername: 'an_account_at_the_partner_level_with_owner_role@example.net',
     adminPassword: '...',
 })
 
-let partnerAuthObject = await myAddigy.getAuthObject()
-let desiredTenantOrgId = '078b...'
+const partnerAuthObject = await myAddigy.getAuthObject()
+const desiredTenantOrgId = '078b...'
 
-let impersonationObject = await myAddigy.getImpersonationAuthObject(
+const impersonationObject = await myAddigy.getImpersonationAuthObject(
     partnerAuthObject,
     desiredTenantOrgId,
 )
