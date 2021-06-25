@@ -134,7 +134,7 @@ const impersonationObject = await myAddigy.getImpersonationAuthObject(
 
 // Now we have a new authentication object to call Addigy's API for a given tenant
 
-await myAddigy.getUsers(impersonationObject)
+await addigy.getUsers(impersonationObject)
 ```
 
 
@@ -157,7 +157,7 @@ const kernalExtensions = { allowedKernalExtensions: [
   ]
 }
 
-await myAddigy.createKernelExtensionPolicy( authObject, 'Name', true, kernalExtensions)
+await addigy.createKernelExtensionPolicy( authObject, 'Name', true, kernalExtensions)
 
 ```
 
@@ -183,7 +183,7 @@ const systemExtensions = [{
   ]
 }
 
-await myAddigy.createSystemExtensionPolicy( authObject, 'Name', true, systemExtensions)
+await addigy.createSystemExtensionPolicy( authObject, 'Name', true, systemExtensions)
 
 ```
 
@@ -204,7 +204,7 @@ const pppcPolicy = {identifier: 'ex_identifier', codeRequirement: 'ex_coderequir
   ]
 }
 
-await myAddigy.createPPPCPolicy(authObject, 'Name', pppcPolicy)
+await addigy.createPPPCPolicy(authObject, 'Name', pppcPolicy)
 ```
 
 
