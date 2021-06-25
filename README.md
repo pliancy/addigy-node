@@ -124,10 +124,10 @@ const addigy = new Addigy({
     adminPassword: '...',
 })
 
-const partnerAuthObject = await myAddigy.getAuthObject()
+const partnerAuthObject = await addigy.getAuthObject()
 const desiredTenantOrgId = '078b...'
 
-const impersonationObject = await myAddigy.getImpersonationAuthObject(
+const impersonationObject = await addigy.getImpersonationAuthObject(
     partnerAuthObject,
     desiredTenantOrgId,
 )
