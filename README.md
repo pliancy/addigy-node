@@ -197,10 +197,12 @@ The pppcPolicy object allows you to pass an identifer and codeRequirement to be 
 
 ```javascript
 const pppcPolicy = {identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [
-    {service: 'address_book', identifier_type: "bundleID", allowed: true
+    {service: 'address_book', identifierType: "bundleID", allowed: true
     },
-    {service: "screen_capture", identifier_type: "bundleID", authorization: "AllowStandardUserToSetSystemService"
-    }
+    {service: "screen_capture", identifierType: "bundleID", authorization: "AllowStandardUserToSetSystemService"
+    },
+  	{service: "apple_events", identifierType: "bundleID", allowed: true, identifier_type: "bundleId", 	    aeReceiverIdentifier: "com.microsoft.Powerpoint", aeReceiverIdentifierType: "bundleID", aeReceiverCodeRequirement: "identifier \"com.microsoft.Powerpoint...."
+		}
   ]
 }
 

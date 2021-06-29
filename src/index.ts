@@ -7,6 +7,7 @@ import {
     KernalExtensionPayload,
     PPPCInput,
     PPPCPayload,
+    PPPCService,
     SystemExtensionPayload,
 } from './types'
 
@@ -943,14 +944,14 @@ export class Addigy {
         }
 
         pppcPolicy.services.forEach((e) => {
-            const service = {
+            const service: PPPCService = {
                 allowed: false,
                 authorization: '',
                 code_requirement: pppcPolicy.codeRequirement,
                 comment: '',
-                identifier_type: e.identifier_type,
+                identifier_type: e.identifierType,
                 identifier: pppcPolicy.identifier,
-                static_code: e.static_code ?? false,
+                static_code: e.staticCode ?? false,
                 predefined_app: null,
                 manual_selection: true,
                 rowId: uuidv4(),
@@ -959,7 +960,15 @@ export class Addigy {
                 service.authorization = e.authorization
             }
             if (e.service !== 'screen_capture') service.allowed = e.allowed
-            payload.services[e.service].push(service as never)
+
+            if (e.service === 'apple_events') {
+                service.ae_receiver_identifier = e.aeReceiverIdentifier
+                service.ae_receiver_identifier_type = e.aeReceiverIdentifierType
+                service.ae_receiver_code_requirement = e.aeReceiverCodeRequirement
+                service.ae_receiver_predefined_app = null
+                service.ae_receiver_manual_selection = true
+            }
+            payload.services[e.service].push(service)
         })
 
         const res = await this._addigyRequest(
@@ -974,6 +983,35 @@ export class Addigy {
             },
         )
         return res.body
+    }
+
+    async getMdmConfigurations(authObject: IAddigyInternalAuthObject): Promise<any[]> {
+        try {
+            let res = await this._addigyRequest('https://app-prod.addigy.com/api/mdm/profiles', {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'GET',
+            })
+            return JSON.parse(res.body)?.mdm_payloads
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async getMdmConfigurationByName(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+    ): Promise<any> {
+        try {
+            const mdmConfigurations = await this.getMdmConfigurations(authObject)
+            const mdmConfiguration = mdmConfigurations.find((e) => e.payload_display_name === name)
+            if (mdmConfiguration) return mdmConfiguration
+            else throw new Error('MDM Configuration not found')
+        } catch (err) {
+            throw err
+        }
     }
 
     async getFileVaultKeys(authObject: IAddigyInternalAuthObject): Promise<object[]> {
