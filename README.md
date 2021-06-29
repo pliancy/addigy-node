@@ -173,7 +173,7 @@ Example:
 
 ```javascript
 const systemExtensions = [{
-  allowedSystemExtensions: {teamIdentifier: '2JJNSDF9', bundleIdentifiers: ['com.bundle.com'
+  allowedSystemExtensions: [{teamIdentifier: '2JJNSDF9', bundleIdentifiers: ['com.bundle.com'
     ]
   }],
   allowedSystemExtensionTypes: [{teamIdentifier: '3JJNSDF9', bundleIdentifiers: ['com.bundle.com'
@@ -193,10 +193,10 @@ await addigy.createSystemExtensionPolicy( authObject, 'Name', true, systemExtens
 
 This method allows you to create a PPPC Policy.  This functions requires 3 parameters. The authObject, name of the Policy, and the pppcPolicy object. 
 
-The pppcPolicy object allows you to pass an identifer and codeRequirement to be mapped an array of services. The services array allowed you to choose and configure the options for each service you want the identifier and codeRequirement to be mapped to. 
+The pppcPolicy object allows you to pass an array of  identifers and codeRequirements to be mapped an array of services. The services array allowed you to choose and configure the options for each service you want the identifier and codeRequirement to be mapped to. 
 
 ```javascript
-const pppcPolicy = {identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [
+const pppcPolicy = [{identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [
     {service: 'address_book', identifierType: "bundleID", allowed: true
     },
     {service: "screen_capture", identifierType: "bundleID", authorization: "AllowStandardUserToSetSystemService"
@@ -204,7 +204,7 @@ const pppcPolicy = {identifier: 'ex_identifier', codeRequirement: 'ex_coderequir
   	{service: "apple_events", identifierType: "bundleID", allowed: true, identifier_type: "bundleId", 	    aeReceiverIdentifier: "com.microsoft.Powerpoint", aeReceiverIdentifierType: "bundleID", aeReceiverCodeRequirement: "identifier \"com.microsoft.Powerpoint...."
 		}
   ]
-}
+}]
 
 await addigy.createPPPCPolicy(authObject, 'Name', pppcPolicy)
 ```
