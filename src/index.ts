@@ -1000,7 +1000,7 @@ export class Addigy {
         }
     }
 
-    async getMdmConfigurationsByName(
+    async getMdmConfigurationByName(
         authObject: IAddigyInternalAuthObject,
         name: string,
     ): Promise<any> {
