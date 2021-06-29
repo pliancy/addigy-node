@@ -193,7 +193,7 @@ await addigy.createSystemExtensionPolicy( authObject, 'Name', true, systemExtens
 
 This method allows you to create a PPPC Policy.  This functions requires 3 parameters. The authObject, name of the Policy, and the pppcPolicy object. 
 
-The pppcPolicy object allows you to pass an array of  identifers and codeRequirements to be mapped an array of services. The services array allowed you to choose and configure the options for each service you want the identifier and codeRequirement to be mapped to. 
+The pppcPolicy object allows you to pass an array of  identifers and codeRequirements to be mapped to an array of services. The services array allowed you to choose and configure the options for each service you want the identifier and codeRequirement to be mapped to. 
 
 ```javascript
 const pppcPolicy = [{identifier: 'ex_identifier', codeRequirement: 'ex_coderequirement', services: [
