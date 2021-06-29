@@ -994,7 +994,7 @@ export class Addigy {
                 },
                 method: 'GET',
             })
-            return JSON.parse(res.body).mdm_payloads
+            return JSON.parse(res.body)?.mdm_payloads
         } catch (err) {
             throw err
         }
