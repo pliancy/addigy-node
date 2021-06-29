@@ -906,7 +906,7 @@ export class Addigy {
     async createPPPCPolicy(
         authObject: IAddigyInternalAuthObject,
         name: string,
-        pppcPolicy: PPPCInput,
+        pppcPolicy: PPPCInput[],
     ): Promise<any> {
         const groupUUID = uuidv4()
         const payload: PPPCPayload = {
@@ -942,33 +942,34 @@ export class Addigy {
                 system_policy_removable_volumes: [],
             },
         }
+        pppcPolicy.forEach((pppc) => {
+            pppc.services.forEach((e) => {
+                const service: PPPCService = {
+                    allowed: false,
+                    authorization: '',
+                    code_requirement: pppc.codeRequirement,
+                    comment: '',
+                    identifier_type: e.identifierType,
+                    identifier: pppc.identifier,
+                    static_code: e.staticCode ?? false,
+                    predefined_app: null,
+                    manual_selection: true,
+                    rowId: uuidv4(),
+                }
+                if (e.service === 'screen_capture' && e.authorization) {
+                    service.authorization = e.authorization
+                }
+                if (e.service !== 'screen_capture') service.allowed = e.allowed
 
-        pppcPolicy.services.forEach((e) => {
-            const service: PPPCService = {
-                allowed: false,
-                authorization: '',
-                code_requirement: pppcPolicy.codeRequirement,
-                comment: '',
-                identifier_type: e.identifierType,
-                identifier: pppcPolicy.identifier,
-                static_code: e.staticCode ?? false,
-                predefined_app: null,
-                manual_selection: true,
-                rowId: uuidv4(),
-            }
-            if (e.service === 'screen_capture' && e.authorization) {
-                service.authorization = e.authorization
-            }
-            if (e.service !== 'screen_capture') service.allowed = e.allowed
-
-            if (e.service === 'apple_events') {
-                service.ae_receiver_identifier = e.aeReceiverIdentifier
-                service.ae_receiver_identifier_type = e.aeReceiverIdentifierType
-                service.ae_receiver_code_requirement = e.aeReceiverCodeRequirement
-                service.ae_receiver_predefined_app = null
-                service.ae_receiver_manual_selection = true
-            }
-            payload.services[e.service].push(service)
+                if (e.service === 'apple_events') {
+                    service.ae_receiver_identifier = e.aeReceiverIdentifier
+                    service.ae_receiver_identifier_type = e.aeReceiverIdentifierType
+                    service.ae_receiver_code_requirement = e.aeReceiverCodeRequirement
+                    service.ae_receiver_predefined_app = null
+                    service.ae_receiver_manual_selection = true
+                }
+                payload.services[e.service].push(service)
+            })
         })
 
         const res = await this._addigyRequest(
