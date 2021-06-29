@@ -83,7 +83,7 @@ export interface PPPCPayload extends Payload {
 
 export interface PPPCService {
     allowed: boolean
-    authorization?: 'AllowStandardUserToSetSystemService' | 'Deny'
+    authorization?: 'AllowStandardUserToSetSystemService' | 'Deny' | ''
     code_requirement: string
     comment: string
     identifier_type: 'bundleID' | 'path'
@@ -92,22 +92,29 @@ export interface PPPCService {
     predefined_app: any
     manual_selection: boolean
     rowId: string
+    ae_receiver_identifier?: string
+    ae_receiver_identifier_type?: string
+    ae_receiver_code_requirement?: string
+    ae_receiver_predefined_app?: null
+    ae_receiver_manual_selection?: true
 }
 
 export interface PPPCInput {
     identifier: string
     codeRequirement: string
-    services: Array<PPPCServiceInput | PPPCScreenCaptureServiceInput>
+    services: Array<
+        | PPPCServiceInput
+        | PPPCScreenCaptureServiceInput
+        | PPPCAppleEventServiceInput
+        | PPPCRestrictedServiceInput
+    >
 }
 
 export interface PPPCServiceInput {
     service:
         | 'accessibility'
         | 'address_book'
-        | 'apple_events'
         | 'calendar'
-        | 'camera'
-        | 'microphone'
         | 'photos'
         | 'post_event'
         | 'reminders'
@@ -123,15 +130,30 @@ export interface PPPCServiceInput {
         | 'system_policy_network_volumes'
         | 'system_policy_removable_volumes'
     allowed: boolean
-    static_code?: Boolean
-    identifier_type: 'bundleID' | 'path'
+    staticCode?: boolean
+    identifierType: 'bundleID' | 'path'
 }
 
 export interface PPPCScreenCaptureServiceInput {
+    service: 'microphone' | 'camera'
+    allowed: false
+    staticCode?: boolean
+    identifierType: 'bundleID' | 'path'
+}
+export interface PPPCRestrictedServiceInput {
     service: 'screen_capture'
     authorization: 'AllowStandardUserToSetSystemService' | 'Deny'
-    static_code?: Boolean
-    identifier_type: 'bundleID' | 'path'
+    staticCode?: boolean
+    identifierType: 'bundleID' | 'path'
+}
+export interface PPPCAppleEventServiceInput {
+    service: 'apple_events'
+    allowed: boolean
+    staticCode?: boolean
+    identifierType: 'bundleID' | 'path'
+    aeReceiverIdentifier: string
+    aeReceiverIdentifierType: 'bundleID' | 'path'
+    aeReceiverCodeRequirement: string
 }
 
 export interface Extension {
