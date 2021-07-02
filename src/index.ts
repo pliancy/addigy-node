@@ -1007,9 +1007,7 @@ export class Addigy {
     ): Promise<any> {
         try {
             const mdmConfigurations = await this.getMdmConfigurations(authObject)
-            const mdmConfiguration = mdmConfigurations.find((e) => e.payload_display_name === name)
-            if (mdmConfiguration) return mdmConfiguration
-            else throw new Error('MDM Configuration not found')
+            return mdmConfigurations.find((e) => e.payload_display_name === name)
         } catch (err) {
             throw err
         }
