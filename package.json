@@ -2,8 +2,8 @@
     "name": "addigy",
     "version": "2.2.1",
     "description": "",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "index.js",
+    "types": "index.d.ts",
     "scripts": {
         "build": "run-s -l clean test tsc copy",
         "build:check": "tsc --noEmit",
