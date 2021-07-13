@@ -36,7 +36,7 @@
     "devDependencies": {
         "@pliancy/eslint-config-ts": "0.0.5",
         "@pliancy/semantic-release-config-npm": "^2.1.0",
-        "@types/got": "9.6.11",
+        "@types/got": "9.6.12",
         "@types/jest": "26.0.23",
         "@types/node": "15.12.5",
         "@types/uuid": "8.3.0",
