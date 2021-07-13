@@ -1,44 +1,22 @@
-name: CI
+name: Build
 on:
-  - push
-  - pull_request
+  push:
+    branches-ignore:
+      - master
+
 jobs:
-  test:
-    name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version:
-          - 15
-          - 14
-          - 13
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+  qa:
+    runs-on: ubuntu-latest
     steps:
-      # checkout code
-      - name: Checkout Code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
-
-      # Install node from package.json volta config
-      - name: Setup Node
+      - name: Use Node.js 14
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 14.x
 
-      # Install packages
-      - name: Install NPM Packages
+      - name: Install Dependencies
         run: yarn
 
-
-      # Lint
-      - name: Run Linting
-        run: yarn lint
-
-
-      - name: Build
-        run: yarn build:ci
+      - name: QA
+        run: yarn qa

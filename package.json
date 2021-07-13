@@ -4,26 +4,17 @@
     "description": "",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "files": [
-        "dist"
-    ],
     "scripts": {
-        "clean": "rimraf dist coverage tmp",
-        "lint": "eslint \"./**/*.{ts,js,json,yml}\" --fix",
-        "test": "jest",
-        "test:ci": "jest --coverage",
-        "test:watch": "jest --watch",
-        "build": "yarn clean && yarn lint && tsc",
-        "build:ci": "tsc",
+        "build": "run-s -l clean test tsc copy",
         "build:check": "tsc --noEmit",
-        "build:watch": "yarn clean && tsc -w",
-        "prepublishOnly": "yarn build"
-    },
-    "lint-staged": {
-        "{src,test}/**/*.ts": [
-            "tslint --fix",
-            "git add"
-        ]
+        "clean": "rimraf coverage dist tmp",
+        "copy": "cpy package.json dist && cpy README.md dist",
+        "lint": "eslint \"src/**/*.ts\" --fix",
+        "postinstall": "[ -d '.husky' ] && husky install || true",
+        "qa": "run-s -l lint test clean build:check",
+        "semantic-release": "semantic-release",
+        "test": "jest",
+        "tsc": "tsc -p tsconfig.build.json"
     },
     "keywords": [
         "addigy",
@@ -44,16 +35,18 @@
     },
     "devDependencies": {
         "@pliancy/eslint-config-ts": "0.0.5",
+        "@pliancy/semantic-release-config-npm": "^2.1.0",
         "@types/got": "9.6.11",
         "@types/jest": "26.0.23",
         "@types/node": "15.12.5",
         "@types/uuid": "8.3.0",
+        "commitizen": "^4.2.4",
         "cpy-cli": "3.1.1",
+        "cz-conventional-changelog": "3.3.0",
         "gh-pages": "3.2.3",
-        "husky": "6.0.0",
+        "husky": "^7.0.1",
         "jest": "27.0.6",
-        "lint-staged": "11.0.0",
-        "npm-run-all": "4.1.5",
+        "npm-run-all": "^4.1.5",
         "open": "8.2.1",
         "rimraf": "3.0.2",
         "ts-jest": "27.0.3",
@@ -63,5 +56,10 @@
     "volta": {
         "node": "14.17.1",
         "yarn": "1.22.10"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
     }
 }
