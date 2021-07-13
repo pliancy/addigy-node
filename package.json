@@ -38,7 +38,7 @@
         "@pliancy/semantic-release-config-npm": "^2.1.0",
         "@types/got": "9.6.11",
         "@types/jest": "26.0.23",
-        "@types/node": "15.12.5",
+        "@types/node": "16.3.1",
         "@types/uuid": "8.3.0",
         "commitizen": "^4.2.4",
         "cpy-cli": "3.1.1",
