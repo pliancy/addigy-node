@@ -38,9 +38,9 @@
         "url": "https://github.com/calebalbers/addigy-node"
     },
     "dependencies": {
-        "form-data": "^4.0.0",
-        "got": "^11.8.2",
-        "uuid": "^8.3.2"
+        "form-data": "4.0.0",
+        "got": "11.8.2",
+        "uuid": "8.3.2"
     },
     "devDependencies": {
         "@pliancy/eslint-config-ts": "0.0.5",
