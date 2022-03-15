@@ -593,7 +593,8 @@ export class Addigy {
             postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
             let res = await this._addigyRequest(
-                `https://app-prod.addigy.com/api/cloud/users/user/${user.id
+                `https://app-prod.addigy.com/api/cloud/users/user/${
+                    user.id
                 }?user_email=${encodeURIComponent(user.email)}`,
                 {
                     headers: {
@@ -618,7 +619,8 @@ export class Addigy {
             if (!user) throw new Error(`No user with email ${email} exists.`)
 
             let res = await this._addigyRequest(
-                `https://app-prod.addigy.com/api/cloud/users/user/${user.id
+                `https://app-prod.addigy.com/api/cloud/users/user/${
+                    user.id
                 }?user_email=${encodeURIComponent(email)}`,
                 {
                     headers: {
