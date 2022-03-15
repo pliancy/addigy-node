@@ -1051,7 +1051,7 @@ export class Addigy {
                 },
                 method: 'GET',
             })
-            return JSON.parse(res.body).mdm_app_list
+            return JSON.parse(res.body).items
         } catch (err) {
             throw err
         }
