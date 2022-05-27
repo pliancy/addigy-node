@@ -29,10 +29,14 @@ export interface Payload {
         | 'com.addigy.syspolicy.system-extension-policy.com.apple.system-extension-policy'
         | 'com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy'
         | 'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy'
+        | 'com.addigy.notifications.com.apple.notificationsettings'
+        | 'com.addigy.custom.mdm.payload'
     payload_type:
         | 'com.apple.system-extension-policy'
         | 'com.apple.syspolicy.kernel-extension-policy'
         | 'com.apple.TCC.configuration-profile-policy'
+        | 'com.apple.notificationsettings'
+        | 'custom'
     payload_version: number
     payload_identifier: string
     payload_uuid: string
@@ -159,4 +163,46 @@ export interface PPPCAppleEventServiceInput {
 export interface Extension {
     teamIdentifier: string
     bundleIdentifiers: string[]
+}
+
+export interface NotificationSettings {
+    bundle_identifier: string
+    notifications_enabled: boolean
+    show_in_lock_screen: boolean
+    show_in_notification_center: boolean
+    sounds_enabled: boolean
+    badges_enabled: boolean
+    critical_alert_enabled: boolean
+    preview_type?: any
+    alert_type?: any
+}
+
+export interface NotificationSettingsPayload extends Payload {
+    notification_settings: NotificationSettings[]
+}
+
+export interface CustomProfilePayload extends Payload {
+    is_profile_signed: boolean
+    custom_profile_content: string
+    decoded_profile_content: string
+    supported_os_versions: SupportedOsVersions
+    payload_scope: 'System' | 'User'
+    profile_json_data: CustomProfileJSONData[]
+}
+
+export interface CustomProfileJSONData {
+    payload_identifier: string
+    payload_removal_disallowed: boolean
+    payload_scope: string
+    payload_type: string
+    payload_uuid: string
+    payload_organization: string
+    payload_version: number
+    payload_display_name: string
+    payload_content: any[]
+}
+export interface SupportedOsVersions {
+    macOS?: string
+    iOS?: string
+    tvOS?: string
 }
