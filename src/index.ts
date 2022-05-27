@@ -1,15 +1,20 @@
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
 import {
+    CustomProfilePayload,
     Extension,
     IAddigyConfig,
     IAddigyInternalAuthObject,
     KernalExtensionPayload,
+    NotificationSettings,
+    NotificationSettingsPayload,
     PPPCInput,
     PPPCPayload,
     PPPCService,
+    SupportedOsVersions,
     SystemExtensionPayload,
 } from './types'
+import plist from '@expo/plist'
 
 export * from './types'
 
@@ -693,7 +698,7 @@ export class Addigy {
                     json: postBody,
                 },
             )
-            return res.body
+            return JSON.parse(res.body)
         } catch (err) {
             throw err
         }
@@ -714,7 +719,7 @@ export class Addigy {
                     method: 'DELETE',
                 },
             )
-            return res.body
+            return JSON.parse(res.body)
         } catch (err) {
             throw err
         }
@@ -814,7 +819,7 @@ export class Addigy {
                     json: { payloads: [payload] },
                 },
             )
-            return res.body
+            return JSON.parse(res.body)
         } catch (err) {
             throw err
         }
@@ -842,7 +847,7 @@ export class Addigy {
             allowedSystemExtensionTypes?: Extension[]
             allowedTeamIdentifiers?: string[]
         },
-    ): Promise<object> {
+    ): Promise<any> {
         const groupUUID = uuidv4()
 
         const payload: SystemExtensionPayload = {
@@ -888,7 +893,94 @@ export class Addigy {
                     json: { payloads: [payload] },
                 },
             )
-            return res.body
+            return JSON.parse(res.body)
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async createNotificationSettingsPolicy(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        notificationSettings: NotificationSettings[],
+    ): Promise<any> {
+        const groupUUID = uuidv4()
+
+        const payload: NotificationSettingsPayload = {
+            addigy_payload_type: 'com.addigy.notifications.com.apple.notificationsettings',
+            payload_type: 'com.apple.notificationsettings',
+            payload_version: 1,
+            payload_identifier: `com.addigy.notifications.com.apple.notificationsettings.${groupUUID}`,
+            payload_uuid: uuidv4(),
+            payload_group_id: groupUUID,
+            payload_display_name: name,
+            notification_settings: notificationSettings,
+        }
+
+        let res = await this._addigyRequest(
+            'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'POST',
+                json: { payloads: [payload] },
+            },
+        )
+        return JSON.parse(res.body)
+    }
+
+    async createCustomProfile(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        customProfileText: string,
+        supportedOsVersions: SupportedOsVersions,
+        payloadScope: 'System' | 'User' = 'System',
+        is_profile_signed = false,
+    ): Promise<any> {
+        const groupUUID = uuidv4()
+
+        const customProfileJson = plist.parse(customProfileText)
+        // Keys for customProfileJson need to be snake_case
+        const updateCustomProfileJson = Object.entries(customProfileJson).reduce(
+            (acc, [key, value]) => {
+                acc[this.toSnakeCase(key)] = value
+                return acc
+            },
+            {} as any,
+        )
+        const customProfileBase64 = Buffer.from(customProfileText).toString('base64')
+
+        const payload: CustomProfilePayload = {
+            addigy_payload_type: 'com.addigy.custom.mdm.payload',
+            payload_type: 'custom',
+            payload_version: 1,
+            payload_identifier: `com.addigy.custom.mdm.payload.${groupUUID}`,
+            payload_uuid: `custom-profile-${uuidv4()}`,
+            payload_group_id: groupUUID,
+            payload_display_name: name,
+            is_profile_signed,
+            profile_json_data: updateCustomProfileJson,
+            decoded_profile_content: customProfileText,
+            custom_profile_content: customProfileBase64,
+            supported_os_versions: supportedOsVersions,
+            payload_scope: payloadScope,
+        }
+
+        try {
+            let res = await this._addigyRequest(
+                'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'POST',
+                    json: { payloads: [payload] },
+                },
+            )
+            return JSON.parse(res.body)
         } catch (err) {
             throw err
         }
@@ -983,7 +1075,7 @@ export class Addigy {
                 json: { payloads: [payload] },
             },
         )
-        return res.body
+        return JSON.parse(res.body)
     }
 
     async getMdmConfigurations(authObject: IAddigyInternalAuthObject): Promise<any[]> {
@@ -1026,6 +1118,16 @@ export class Addigy {
         } catch (err) {
             throw err
         }
+    }
+
+    toSnakeCase(text: string) {
+        // Complex and complete regex string thanks to https://github.com/zellwk/javascript/issues/14
+        return text
+            .replace(
+                /([^\p{L}\d]+|(?<=\p{L})(?=\d)|(?<=\d)(?=\p{L})|(?<=[\p{Ll}\d])(?=\p{Lu})|(?<=\p{Lu})(?=\p{Lu}\p{Ll})|(?<=[\p{L}\d])(?=\p{Lu}\p{Ll}))/gu,
+                '_',
+            )
+            .toLowerCase()
     }
 
     async getApnsCerts(
