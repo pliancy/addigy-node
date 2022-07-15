@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import {
     CustomProfilePayload,
     Extension,
+    FilevaultPayload,
+    FilevaultRequest,
     IAddigyConfig,
     IAddigyInternalAuthObject,
     KernalExtensionPayload,
@@ -978,6 +980,127 @@ export class Addigy {
                     },
                     method: 'POST',
                     json: { payloads: [payload] },
+                },
+            )
+            return JSON.parse(res.body)
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async createMdmProfile(authObject: IAddigyInternalAuthObject, mdmProfile: any) {
+        try {
+            let res = await this._addigyRequest(
+                'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'POST',
+                    json: { payloads: mdmProfile },
+                },
+            )
+            return JSON.parse(res.body)
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async createFilevaultPolicy(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        filevault: FilevaultRequest,
+        payloadPriority: number = 1,
+    ) {
+        const groupUUID = uuidv4()
+        const encryptCertPayloadUUID = uuidv4()
+
+        const basePayload = {
+            payload_display_name: name,
+            payload_version: 1,
+            payload_group_id: groupUUID,
+            addigy_payload_version: 0,
+            payload_priority: payloadPriority,
+        }
+
+        const payloads: FilevaultPayload[] = [
+            {
+                ...basePayload,
+                payload_type: 'com.apple.MCX.FileVault2',
+                addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.MCX.FileVault2',
+                payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.FileVault2.${groupUUID}`,
+                payload_uuid: uuidv4(),
+                enable: filevault.enable ? 'On' : 'Off',
+                defer: filevault.defer,
+                use_recovery_key: true,
+                show_recovery_key:
+                    filevault.showRecoveryKey === undefined ? null : filevault.showRecoveryKey,
+                defer_dont_ask_at_user_logout:
+                    filevault.deferDontAskAtUserLogout === undefined
+                        ? null
+                        : filevault.deferDontAskAtUserLogout,
+                defer_force_at_user_login_max_bypass_attempts:
+                    filevault.deferForceAtUserLoginMaxBypassAttempts === undefined
+                        ? null
+                        : filevault.deferForceAtUserLoginMaxBypassAttempts,
+            },
+            {
+                ...basePayload,
+                payload_type: 'com.apple.MCX',
+                addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.MCX',
+                payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.${groupUUID} `,
+                payload_uuid: uuidv4(),
+                destroy_fv_key_on_standby:
+                    filevault.destroyFvKeyOnStandby === undefined
+                        ? null
+                        : filevault.destroyFvKeyOnStandby,
+                dont_allow_fde_disable: true,
+            },
+        ]
+
+        if (filevault.escrowRecoveryKey)
+            payloads.push(
+                {
+                    ...basePayload,
+                    addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1',
+                    payload_type: 'com.apple.security.pkcs1',
+                    payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.pkcs1.${groupUUID}`,
+                    payload_uuid: uuidv4(),
+                    is_from_security_profile: true,
+                },
+                {
+                    ...basePayload,
+                    addigy_payload_type:
+                        'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow',
+                    payload_type: 'com.apple.security.FDERecoveryKeyEscrow',
+                    payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow.${groupUUID}`,
+                    payload_uuid: uuidv4(),
+                    encrypt_cert_payload_uuid: encryptCertPayloadUUID,
+                    location: 'Key will be escrowed to an Addigy secure database.',
+                },
+                {
+                    ...basePayload,
+                    addigy_payload_type:
+                        'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect',
+                    payload_type: 'com.apple.security.FDERecoveryRedirect',
+                    payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect.${groupUUID}`,
+                    payload_uuid: uuidv4(),
+                    encrypt_cert_payload_uuid: encryptCertPayloadUUID,
+                    redirect_url: '',
+                },
+            )
+
+        try {
+            let res = await this._addigyRequest(
+                'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'POST',
+                    json: { payloads },
                 },
             )
             return JSON.parse(res.body)
