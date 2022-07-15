@@ -31,12 +31,23 @@ export interface Payload {
         | 'com.addigy.syspolicy.kernel-extension-policy.com.apple.syspolicy.kernel-extension-policy'
         | 'com.addigy.notifications.com.apple.notificationsettings'
         | 'com.addigy.custom.mdm.payload'
+        | 'com.addigy.securityAndPrivacy.com.apple.MCX.FileVault2'
+        | 'com.addigy.securityAndPrivacy.com.apple.MCX'
+        | 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1'
+        | 'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow'
+        | 'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect'
     payload_type:
         | 'com.apple.system-extension-policy'
         | 'com.apple.syspolicy.kernel-extension-policy'
         | 'com.apple.TCC.configuration-profile-policy'
         | 'com.apple.notificationsettings'
         | 'custom'
+        | 'com.apple.MCX.FileVault2'
+        | 'com.apple.MCX'
+        | 'com.apple.security.pkcs1'
+        | 'com.apple.security.FDERecoveryKeyEscrow'
+        | 'com.apple.security.FDERecoveryRedirect'
+
     payload_version: number
     payload_identifier: string
     payload_uuid: string
@@ -205,4 +216,37 @@ export interface SupportedOsVersions {
     macOS?: string
     iOS?: string
     tvOS?: string
+}
+
+export interface FilevaultPayload extends Payload {
+    enable?: 'On' | 'Off'
+    defer?: boolean
+    use_recovery_key?: boolean
+    show_recovery_key?: boolean | null
+    defer_dont_ask_at_user_logout?: boolean | null
+    defer_force_at_user_login_max_bypass_attempts?: number | null
+    addigy_payload_version?: number
+    destroy_fv_key_on_standby?: boolean | null
+    dont_allow_fde_disable?: boolean
+    is_from_security_profile?: boolean
+    encrypt_cert_payload_uuid?: string
+    location?: string
+    payload_priority?: number
+    redirect_url?: string
+}
+
+export interface FilevaultRequest {
+    enable?: boolean
+    defer?: boolean
+    showRecoveryKey?: boolean
+    /**
+     * Require user to unlock filevault after hibernation
+     */
+    destroyFvKeyOnStandby?: boolean
+    /**
+     * When enabled, the device will encrypt the personal recovery key with a certificate created by Addigy. The encrypted key will be stored in a secured database.
+     */
+    escrowRecoveryKey?: boolean
+    deferDontAskAtUserLogout?: boolean
+    deferForceAtUserLoginMaxBypassAttempts?: -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 }
