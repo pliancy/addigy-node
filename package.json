@@ -8,14 +8,14 @@
     "dependencies": {
         "@expo/plist": "0.0.18",
         "form-data": "4.0.0",
-        "got": "11.8.2",
+        "got": "11.8.5",
         "uuid": "8.3.2"
     },
     "description": "",
     "devDependencies": {
         "@pliancy/eslint-config-ts": "0.0.5",
         "@pliancy/semantic-release-config-npm": "2.1.0",
-        "@types/got": "9.6.11",
+        "@types/got": "9.6.12",
         "@types/jest": "26.0.23",
         "@types/node": "15.12.5",
         "@types/uuid": "8.3.0",

@@ -1,6 +1,7 @@
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
 import {
+    CustomFact,
     CustomProfilePayload,
     Extension,
     FilevaultPayload,
@@ -1199,6 +1200,71 @@ export class Addigy {
             },
         )
         return JSON.parse(res.body)
+    }
+
+    async createCustomFact(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        script: string,
+        scriptType: 'bash' | 'python' | 'zsh',
+    ): Promise<CustomFact> {
+        const shebang = {
+            bash: '#!/bin/bash',
+            python: '#!/usr/bin/python',
+            zsh: '#!/bin/zsh',
+        }
+        const body = {
+            name,
+            os_architectures: {
+                linux_arm: {
+                    is_supported: false,
+                    language: '',
+                    shebang: '',
+                    script: '',
+                },
+                darwin_amd64: {
+                    is_supported: true,
+                    language: scriptType,
+                    shebang: shebang[scriptType],
+                    script,
+                },
+            },
+            return_type: 'string',
+        }
+        const res = await this._addigyRequest(
+            'https://app-prod.addigy.com/api/services/facts/custom',
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'POST',
+                json: body,
+            },
+        )
+        return JSON.parse(res.body)
+    }
+
+    async getCustomFacts(authObject: IAddigyInternalAuthObject): Promise<CustomFact[]> {
+        const res = await this._addigyRequest(
+            'https://app-prod.addigy.com/api/services/facts/custom',
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'GET',
+            },
+        )
+        return JSON.parse(res.body)
+    }
+
+    async getCustomFactByName(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+    ): Promise<CustomFact | undefined> {
+        const facts = await this.getCustomFacts(authObject)
+        return facts.find((e: any) => e.name === name)
     }
 
     async getMdmConfigurations(authObject: IAddigyInternalAuthObject): Promise<any[]> {
