@@ -1256,7 +1256,7 @@ export class Addigy {
                 method: 'GET',
             },
         )
-        return JSON.parse(res.body.custom_facts)
+        return JSON.parse(res.body.custom_facts) ?? []
     }
 
     async getCustomFactByName(
