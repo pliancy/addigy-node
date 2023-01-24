@@ -275,3 +275,30 @@ export interface CustomFactOSArchitecturesData {
     script: string
     md5_hash: string
 }
+
+export interface MdmConfigurations {
+    payloads: Payload[]
+    staged_payloads: any[]
+    policies_mdm_payloads: PoliciesMdmPayload[]
+}
+
+export interface MdmConfigurationPayload {
+    addigy_payload_type: string
+    addigy_payload_version?: number
+    orgid: string
+    payload_display_name: string
+    payload_group_id: string
+    payload_identifier: string
+    payload_priority: number
+    payload_type: string
+    payload_uuid: string
+    payload_version: number
+    policy_restricted: boolean
+    has_manifest?: boolean
+}
+
+export interface PoliciesMdmPayload {
+    orgid: string
+    configuration_id: string
+    policy_id: string
+}
