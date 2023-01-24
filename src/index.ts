@@ -9,6 +9,7 @@ import {
     IAddigyConfig,
     IAddigyInternalAuthObject,
     KernalExtensionPayload,
+    MdmConfigurationPayload,
     NotificationSettings,
     NotificationSettingsPayload,
     PPPCInput,
@@ -1269,25 +1270,27 @@ export class Addigy {
         return facts.find((e: any) => e.name === name)
     }
 
-    async getMdmConfigurations(authObject: IAddigyInternalAuthObject): Promise<any[]> {
+    async getMdmConfigurations(
+        authObject: IAddigyInternalAuthObject,
+    ): Promise<MdmConfigurationPayload[]> {
         try {
-            let res = await this._addigyRequest('https://app-prod.addigy.com/api/mdm/profiles', {
-                headers: {
-                    Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
+            let res = await this._addigyRequest(
+                'https://app.addigy.com/api/v2/mdm/configurations/profiles',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'GET',
                 },
-                method: 'GET',
-            })
-            return JSON.parse(res.body)?.mdm_payloads
+            )
+            return JSON.parse(res.body)?.payloads
         } catch (err) {
             throw err
         }
     }
 
-    async getMdmConfigurationByName(
-        authObject: IAddigyInternalAuthObject,
-        name: string,
-    ): Promise<any> {
+    async getMdmConfigurationByName(authObject: IAddigyInternalAuthObject, name: string) {
         try {
             const mdmConfigurations = await this.getMdmConfigurations(authObject)
             return mdmConfigurations.find((e) => e.payload_display_name === name)
@@ -1295,7 +1298,6 @@ export class Addigy {
             throw err
         }
     }
-
     async getFileVaultKeys(authObject: IAddigyInternalAuthObject): Promise<object[]> {
         try {
             let res = await this._addigyRequest('https://prod.addigy.com/get_org_filevault_keys/', {
