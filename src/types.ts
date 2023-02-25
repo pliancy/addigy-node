@@ -36,6 +36,8 @@ export interface Payload {
         | 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1'
         | 'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow'
         | 'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect'
+        | 'com.addigy.servicemanagement.com.apple.servicemanagement'
+        | 'com.addigy.webcontent-filter.com.apple.webcontent-filter'
     payload_type:
         | 'com.apple.system-extension-policy'
         | 'com.apple.syspolicy.kernel-extension-policy'
@@ -47,6 +49,8 @@ export interface Payload {
         | 'com.apple.security.pkcs1'
         | 'com.apple.security.FDERecoveryKeyEscrow'
         | 'com.apple.security.FDERecoveryRedirect'
+        | 'com.apple.servicemanagement'
+        | 'com.apple.webcontent-filter'
 
     payload_version: number
     payload_identifier: string
@@ -301,4 +305,80 @@ export interface PoliciesMdmPayload {
     orgid: string
     configuration_id: string
     policy_id: string
+}
+
+export interface ServiceManagementPayload extends Payload {
+    addigy_payload_version: number
+    has_manifest: boolean
+    payload_enabled: boolean
+    payload_priority: number
+    policy_restricted: boolean
+    requires_device_supervision: boolean
+    requires_mdm_profile_approved: boolean
+    rules: ServiceManagementPayloadRule[]
+    supported_os_versions: SupportedOsVersions | null
+}
+
+export interface ServiceManagementPayloadRule {
+    comment: string
+    rule_type: string
+    rule_value: string
+}
+
+export interface WebContentFilterPayload extends Payload {
+    addigy_payload_version: number
+    auto_filter_enabled: null | boolean
+    blacklisted_urls: null | string[]
+    content_filter_uuid: null | string
+    filter_browsers: null | boolean
+    filter_data_provider_bundle_identifier: string | null
+    filter_data_provider_designated_requirement: string | null
+    filter_grade: 'firewall' | 'inspector'
+    filter_packet_provider_bundle_identifier: null | string
+    filter_packet_provider_designated_requirement: null | string
+    filter_packets: null | boolean
+    filter_sockets: boolean
+    filter_type: string
+    has_manifest: boolean
+    organization: null | string
+    password: null | string
+    payload_enabled: boolean
+    payload_priority: number
+    permitted_urls: null | string[]
+    plugin_bundle_id: string | null
+    policy_restricted: boolean
+    requires_device_supervision: boolean
+    requires_mdm_profile_approved: boolean
+    server_address: null | string
+    supported_os_versions: null | SupportedOsVersions
+    user_defined_name: string
+    user_name: null | string
+    vendor_config: Record<string, string> | null
+    white_listed_bookmarks: null | string[]
+}
+
+export interface CreateWebContentFilterPayload {
+    user_defined_name: string
+    plugin_bundle_id: string
+    filter_grade: 'firewall' | 'inspector'
+    vendor_config?: Record<string, string>
+    content_filter_uuid?: string
+    server_address?: string
+    organization?: string
+    user_name?: string
+    password?: string
+    filter_browsers?: boolean
+    filter_sockets?: boolean
+    filter_data_provider_bundle_identifier?: string
+    filter_data_provider_designated_requirement?: string
+    filter_packets?: boolean
+    filter_packet_provider_bundle_identifier?: string
+    filter_packet_provider_designated_requirement?: string
+    auto_filter_enabled?: null
+    permitted_urls?: string[]
+    blacklisted_urls?: string[]
+    white_listed_bookmarks?: string[]
+    policy_restricted?: boolean
+    requires_device_supervision?: boolean
+    requires_mdm_profile_approved?: boolean
 }
