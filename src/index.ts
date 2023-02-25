@@ -1,6 +1,7 @@
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
 import {
+    CreateWebContentFilterPayload,
     CustomFact,
     CustomProfilePayload,
     Extension,
@@ -15,8 +16,11 @@ import {
     PPPCInput,
     PPPCPayload,
     PPPCService,
+    ServiceManagementPayload,
+    ServiceManagementPayloadRule,
     SupportedOsVersions,
     SystemExtensionPayload,
+    WebContentFilterPayload,
 } from './types'
 import plist from '@expo/plist'
 
@@ -1007,6 +1011,116 @@ export class Addigy {
         } catch (err) {
             throw err
         }
+    }
+
+    async createServiceManagementPolicy(
+        authObject: IAddigyInternalAuthObject,
+        name: string,
+        rules: ServiceManagementPayloadRule[],
+        priority = 9,
+    ): Promise<any> {
+        const groupUUID = uuidv4()
+
+        const payload: ServiceManagementPayload = {
+            addigy_payload_type: 'com.addigy.servicemanagement.com.apple.servicemanagement',
+            addigy_payload_version: 0,
+            has_manifest: false,
+            payload_display_name: name,
+            payload_enabled: false,
+            payload_group_id: groupUUID,
+            payload_identifier: `com.addigy.servicemanagement.com.apple.servicemanagement.${groupUUID}`,
+            payload_priority: priority,
+            payload_type: 'com.apple.servicemanagement',
+            payload_uuid: uuidv4(),
+            payload_version: 1,
+            policy_restricted: false,
+            requires_device_supervision: false,
+            requires_mdm_profile_approved: false,
+            supported_os_versions: null,
+            rules,
+        }
+
+        try {
+            let res = await this._addigyRequest(
+                'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+                {
+                    headers: {
+                        Cookie: `auth_token=${authObject.authToken};`,
+                        origin: 'https://app-prod.addigy.com',
+                    },
+                    method: 'POST',
+                    json: { payloads: [payload] },
+                },
+            )
+            return JSON.parse(res.body)
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /*
+         @param {string} payloadName - Name of the profile
+         @param {string} userDefinedName - Name of the filter to be displayed in the User
+        @param {string} pluginBundleId - Bundle ID of the plugin to be used for filtering
+    
+
+    */
+    async createWebContentFilterPolicy(
+        authObject: IAddigyInternalAuthObject,
+        payloadName: string,
+        webContentPayload: CreateWebContentFilterPayload,
+        priority = 9,
+    ) {
+        const groupUUID = uuidv4()
+        const payload: WebContentFilterPayload = {
+            addigy_payload_type: 'com.addigy.webcontent-filter.com.apple.webcontent-filter',
+            addigy_payload_version: 2,
+            auto_filter_enabled: null,
+            blacklisted_urls: null,
+            content_filter_uuid: null,
+            filter_browsers: null,
+            filter_data_provider_bundle_identifier: null,
+            filter_data_provider_designated_requirement: null,
+            filter_packet_provider_bundle_identifier: null,
+            filter_packet_provider_designated_requirement: null,
+            filter_packets: null,
+            filter_sockets: true,
+            filter_type: 'Plugin',
+            has_manifest: false,
+            organization: null,
+            password: null,
+            payload_display_name: payloadName,
+            payload_enabled: true,
+            payload_group_id: groupUUID,
+            payload_identifier: `com.addigy.webcontent-filter.com.apple.webcontent-filter.${groupUUID}`,
+            payload_priority: priority,
+            payload_type: 'com.apple.webcontent-filter',
+            payload_uuid: uuidv4(),
+            payload_version: 1,
+            permitted_urls: null,
+            policy_restricted: false,
+            requires_device_supervision: false,
+            requires_mdm_profile_approved: false,
+            server_address: null,
+            supported_os_versions: null,
+            user_name: null,
+            vendor_config: null,
+            white_listed_bookmarks: null,
+            ...webContentPayload,
+        }
+
+        let res = await this._addigyRequest(
+            'https://app-prod.addigy.com/api/mdm/user/profiles/configurations',
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: 'https://app-prod.addigy.com',
+                },
+                method: 'POST',
+                json: { payloads: [payload] },
+            },
+        )
+        return JSON.parse(res.body)
     }
 
     async createFilevaultPolicy(
