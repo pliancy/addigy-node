@@ -1062,7 +1062,7 @@ export class Addigy {
          @param {string} payloadName - Name of the profile
          @param {string} userDefinedName - Name of the filter to be displayed in the User
         @param {string} pluginBundleId - Bundle ID of the plugin to be used for filtering
-    
+
 
     */
     async createWebContentFilterPolicy(
@@ -1499,14 +1499,16 @@ export class Addigy {
         orgId: string,
     ): Promise<IAddigyInternalAuthObject> {
         let postBody: any = {
-            orgid: orgId,
+            parent_orgid: authObject.orgId,
+            child_orgid: orgId,
+            user_email: authObject.emailAddress,
         }
 
         try {
-            let res = await this._addigyRequest('https://prod.addigy.com/impersonate_org/', {
+            let res = await this._addigyRequest('https://app.addigy.com/api/impersonation', {
                 headers: {
-                    Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
+                    Cookie: `prod_auth_token=${authObject.authToken};`,
+                    origin: 'https://app.addigy.com',
                 },
                 method: 'POST',
                 json: postBody,
@@ -1517,7 +1519,7 @@ export class Addigy {
                 authToken: res.headers['set-cookie']
                     .find(
                         (e: string) =>
-                            e.includes('auth_token') && !e.includes('original_auth_token'),
+                            e.includes('prod_auth_token') && !e.includes('original_auth_token'),
                     )
                     .split('auth_token=')[1]
                     .split(';')[0],
