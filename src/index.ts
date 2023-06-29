@@ -494,7 +494,7 @@ export class Addigy {
         installationScript: string,
         condition: string,
         removeScript: string,
-        priority = 10
+        priority = 10,
     ): Promise<object[]> {
         let postBody: any = {
             base_identifier: baseIdentifier,
