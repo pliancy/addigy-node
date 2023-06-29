@@ -482,7 +482,6 @@ export class Addigy {
                 method: 'PUT',
             })
             return res.body
-
         } catch (err) {
             throw err
         }
