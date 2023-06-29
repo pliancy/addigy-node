@@ -494,14 +494,16 @@ export class Addigy {
         installationScript: string,
         condition: string,
         removeScript: string,
+        priority = 10
     ): Promise<object[]> {
         let postBody: any = {
             base_identifier: baseIdentifier,
-            version: version,
-            downloads: downloads,
+            version,
+            downloads,
             installation_script: installationScript,
-            condition: condition,
+            condition,
             remove_script: removeScript,
+            priority,
         }
 
         try {
