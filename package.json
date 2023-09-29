@@ -13,7 +13,7 @@
     },
     "description": "",
     "devDependencies": {
-        "@pliancy/eslint-config-ts": "0.0.5",
+        "@pliancy/eslint-config-ts": "0.1.0",
         "@pliancy/semantic-release-config-npm": "2.2.0",
         "@types/got": "9.6.12",
         "@types/jest": "29.5.5",
