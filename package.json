@@ -13,7 +13,7 @@
     },
     "description": "",
     "devDependencies": {
-        "@pliancy/eslint-config-ts": "0.1.0",
+        "@pliancy/eslint-config-ts": "1.0.0",
         "@pliancy/semantic-release-config-npm": "2.2.0",
         "@types/got": "9.6.12",
         "@types/jest": "29.5.5",
@@ -26,7 +26,6 @@
         "husky": "8.0.3",
         "jest": "29.7.0",
         "npm-run-all": "4.1.5",
-        "open": "8.4.2",
         "open": "9.1.0",
         "rimraf": "3.0.2",
         "ts-jest": "29.1.1",
