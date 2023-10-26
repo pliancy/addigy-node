@@ -1,6 +1,7 @@
 import got from 'got'
 import { v4 as uuidv4 } from 'uuid'
 import {
+    CreateSoftware,
     CreateWebContentFilterPayload,
     CustomFact,
     CustomProfilePayload,
@@ -18,6 +19,7 @@ import {
     PPPCService,
     ServiceManagementPayload,
     ServiceManagementPayloadRule,
+    Software,
     SupportedOsVersions,
     SystemExtensionPayload,
     WebContentFilterPayload,
@@ -487,6 +489,17 @@ export class Addigy {
         }
     }
 
+    /**
+     * V1 API - Creates a custom software object in Addigy.
+     * @param baseIdentifier
+     * @param version
+     * @param downloads
+     * @param installationScript
+     * @param condition
+     * @param removeScript
+     * @param priority
+     * @returns
+     */
     async createCustomSoftware(
         baseIdentifier: string,
         version: string,
@@ -522,6 +535,28 @@ export class Addigy {
     //
     // The following endpoints use Addigy's internal API. Use at your own risk.
     //
+
+    /**
+     *  Internal API - Creates a custom software object in Addigy. This is the internal API, so it is subject to change.
+     *  Different from the V1 API, this allows for things like setting priority.
+     * @param authObject
+     * @param software
+     * @returns
+     */
+    async createSoftwareInternal(
+        authObject: IAddigyInternalAuthObject,
+        software: CreateSoftware,
+    ): Promise<Software> {
+        const res = await this._addigyRequest('https://app.addigy.com/api/software', {
+            headers: {
+                Cookie: `auth_token=${authObject.authToken};`,
+                origin: 'https://app-prod.addigy.com',
+            },
+            method: 'POST',
+            json: software,
+        })
+        return JSON.parse(res.body)
+    }
 
     async getUsers(authObject: IAddigyInternalAuthObject): Promise<object[]> {
         try {
@@ -1060,12 +1095,10 @@ export class Addigy {
         }
     }
 
-    /*
+    /**
          @param {string} payloadName - Name of the profile
          @param {string} userDefinedName - Name of the filter to be displayed in the User
         @param {string} pluginBundleId - Bundle ID of the plugin to be used for filtering
-
-
     */
     async createWebContentFilterPolicy(
         authObject: IAddigyInternalAuthObject,
