@@ -1,11 +1,7 @@
-import { AxiosInstance } from 'axios'
 import { AlertStatus } from './alert.types'
+import { AxiosInstance } from 'axios'
 
 export class Alerts {
-    reqHeaders = {}
-
-    domain = ''
-
     constructor(private readonly http: AxiosInstance) {}
 
     async getAlerts(
@@ -19,11 +15,8 @@ export class Alerts {
         }
 
         try {
-            let res = await this.http(
-                `${this.domain}/alerts?page=${page}&per_page=${pageLength}` + statusUri,
-                { headers: this.reqHeaders },
-            )
-            return JSON.parse(res.data)
+            let res = await this.http.get(`alerts?page=${page}&per_page=${pageLength}` + statusUri)
+            return res.data
         } catch (err) {
             throw err
         }

@@ -1,12 +1,14 @@
-import { IAddigyInternalAuthObject } from '../../types'
-import { AxiosInstance } from 'axios'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import axios from 'axios'
+import { Urls } from '../addigy.constants'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class ScreenConnect {
-    domain = ''
-
-    reqHeaders = {}
-
-    constructor(private readonly http: AxiosInstance) {}
+    private readonly http = axios.create({
+        baseURL: `${Urls.appProd}/api/devices/screenconnect`,
+        ...getAxiosHttpAgents(),
+        headers: { origin: Urls.appProd },
+    })
 
     async getScreenconnectLinks(
         authObject: IAddigyInternalAuthObject,
@@ -22,19 +24,14 @@ export class ScreenConnect {
         }
 
         try {
-            let res = await this.http.post(
-                'https://app-prod.addigy.com/api/devices/screenconnect/links',
-                postBody,
-                {
-                    headers: {
-                        Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
-                        email: authObject.emailAddress,
-                        orgid: authObject.orgId,
-                    },
+            let res = await this.http.post('links', postBody, {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    email: authObject.emailAddress,
+                    orgid: authObject.orgId,
                 },
-            )
-            return JSON.parse(res.data)
+            })
+            return res.data
         } catch (err) {
             throw err
         }

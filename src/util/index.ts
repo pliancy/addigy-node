@@ -1,1 +1,0 @@
-export { toSnakeCase } from './toSnakeCase'

@@ -1,19 +1,23 @@
-import { AxiosInstance } from 'axios'
-import { IAddigyInternalAuthObject } from '../../types'
+import axios from 'axios'
+import { Urls } from '../addigy.constants'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Certs {
-    domain = ''
-
-    reqHeaders = {}
-
-    constructor(private readonly http: AxiosInstance) {}
+    private readonly http = axios.create({
+        baseURL: `${Urls.appProd}/api`,
+        ...getAxiosHttpAgents(),
+        headers: {
+            origin: Urls.appProd,
+        },
+    })
 
     async getApnsCerts(
         authObject: IAddigyInternalAuthObject,
         next?: string,
         previous?: string,
     ): Promise<object[]> {
-        let url = 'https://app-prod.addigy.com/api/apn/user/apn/list'
+        let url = 'apn/user/apn/list'
         if (next) {
             url = `${url}?next=${next}`
         }
@@ -25,12 +29,11 @@ export class Certs {
             let res = await this.http.get(url, {
                 headers: {
                     Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
                     email: authObject.emailAddress,
                     orgid: authObject.orgId,
                 },
             })
-            return JSON.parse(res.data).items
+            return res.data.items
         } catch (err) {
             throw err
         }

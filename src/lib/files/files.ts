@@ -1,15 +1,15 @@
-import { AxiosInstance } from 'axios'
-import { IAddigyConfig } from '../../types'
+import axios from 'axios'
+import { IAddigyConfig } from '../types'
+import { Urls } from '../addigy.constants'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Files {
-    domain = ''
+    private readonly http = axios.create({
+        ...getAxiosHttpAgents(),
+    })
 
-    reqHeaders = {}
-
-    constructor(
-        private readonly http: AxiosInstance,
-        private readonly config: IAddigyConfig,
-    ) {}
+    constructor(private readonly config: IAddigyConfig) {}
 
     async getFileUploadUrl(fileName: string, contentType?: string): Promise<string> {
         const headers = {
@@ -20,10 +20,10 @@ export class Files {
         }
 
         try {
-            let res = await this.http.get(`https://file-manager-prod.addigy.com/api/upload/url`, {
-                headers: headers,
+            let res = await this.http.get(`${Urls.fileManager}/api/upload/url`, {
+                headers,
             })
-            return JSON.parse(res.data)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -35,8 +35,22 @@ export class Files {
         }
 
         try {
-            let res = await this.http.put(`${uploadUrl}`, file, {
-                headers: headers,
+            let res = await this.http.put(uploadUrl, file, {
+                headers,
+            })
+            return res.data
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async getFileVaultKeys(authObject: IAddigyInternalAuthObject): Promise<object[]> {
+        try {
+            let res = await this.http.get(`${Urls.api}/get_org_filevault_keys`, {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                    origin: Urls.appProd,
+                },
             })
             return res.data
         } catch (err) {

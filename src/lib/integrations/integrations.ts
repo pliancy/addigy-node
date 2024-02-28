@@ -1,24 +1,26 @@
-import { AxiosInstance } from 'axios'
-import { IAddigyInternalAuthObject } from '../../types'
+import axios from 'axios'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import { Urls } from '../addigy.constants'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Integrations {
-    domain = ''
+    private readonly headers = { origin: Urls.appProd }
 
-    reqHeaders = {}
-
-    constructor(private readonly http: AxiosInstance) {}
+    private readonly http = axios.create({
+        ...getAxiosHttpAgents(),
+        headers: this.headers,
+    })
 
     async getApiIntegrations(authObject: IAddigyInternalAuthObject): Promise<object[]> {
         try {
-            let res = await this.http.get('https://prod.addigy.com/accounts/api/keys/get/', {
+            let res = await this.http.get(`${Urls.api}/accounts/api/keys/get`, {
                 headers: {
                     Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
                     email: authObject.emailAddress,
                     orgid: authObject.orgId,
                 },
             })
-            return JSON.parse(res.data)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -32,17 +34,12 @@ export class Integrations {
             name,
         }
         try {
-            let res = await this.http.post(
-                'https://app-prod.addigy.com/api/integrations/keys',
-                postBody,
-                {
-                    headers: {
-                        Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
-                    },
+            let res = await this.http.post(`${Urls.appProd}/api/integrations/keys`, postBody, {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
                 },
-            )
-            return JSON.parse(res.data)
+            })
+            return res.data
         } catch (err) {
             throw err
         }
@@ -54,15 +51,14 @@ export class Integrations {
     ): Promise<object> {
         try {
             let res = await this.http.delete(
-                `https://app-prod.addigy.com/api/integrations/keys?id=${objectId}`,
+                `${Urls.appProd}/api/integrations/keys?id=${objectId}`,
                 {
                     headers: {
                         Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
                     },
                 },
             )
-            return JSON.parse(res.data)
+            return res.data
         } catch (err) {
             throw err
         }

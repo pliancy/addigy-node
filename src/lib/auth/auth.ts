@@ -1,11 +1,16 @@
-import { AxiosInstance } from 'axios'
-import { IAddigyConfig, IAddigyInternalAuthObject } from '../types'
+import { IAddigyConfig } from '../types'
+import axios from 'axios'
+import { Urls } from '../addigy.constants'
+import { IAddigyInternalAuthObject } from './auth.types'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Auth {
-    constructor(
-        private readonly http: AxiosInstance,
-        private readonly config: IAddigyConfig,
-    ) {}
+    private readonly http = axios.create({
+        baseURL: Urls.api,
+        ...getAxiosHttpAgents(),
+    })
+
+    constructor(private readonly config: IAddigyConfig) {}
 
     async getAuthObject(): Promise<IAddigyInternalAuthObject> {
         let postBody: any = {
@@ -16,17 +21,17 @@ export class Auth {
         try {
             if (!this.config.adminUsername || !this.config.adminPassword)
                 throw new Error(
-                    "The function you are using hits Addigy's internal API, but no username or password was provided in the constructor. Please fill out the adminUsername and adminPassword parameters.",
+                    "The function you are using hits Addigy's internal API, but no username or " +
+                        'password was provided in the constructor. Please fill out the adminUsername and ' +
+                        'adminPassword parameters.',
                 )
-            let res = await this.http.post('https://prod.addigy.com/signin/', postBody)
+            let res = await this.http.post('signin', postBody)
 
-            let authObject = {
+            return {
                 orgId: res.data.orgid,
                 authToken: res.data.authtoken,
                 emailAddress: res.data.email,
             }
-
-            return authObject
         } catch (err) {
             throw err
         }
@@ -43,10 +48,10 @@ export class Auth {
         }
 
         try {
-            let res = await this.http.post('https://app.addigy.com/api/impersonation', postBody, {
+            let res = await this.http.post('api/impersonation', postBody, {
                 headers: {
                     Cookie: `prod_auth_token=${authObject.authToken};`,
-                    origin: 'https://app.addigy.com',
+                    origin: Urls.app,
                 },
             })
 

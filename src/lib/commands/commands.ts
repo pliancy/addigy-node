@@ -1,10 +1,6 @@
 import { AxiosInstance } from 'axios'
 
 export class Commands {
-    domain = ''
-
-    reqHeaders = {}
-
     constructor(private readonly http: AxiosInstance) {}
 
     async runCommand(agentIds: string[], command: string): Promise<object[]> {
@@ -14,9 +10,7 @@ export class Commands {
         }
 
         try {
-            let res = await this.http.post(`${this.domain}/devices/commands`, postBody, {
-                headers: this.reqHeaders,
-            })
+            let res = await this.http.post(`devices/commands`, postBody)
             return res.data
         } catch (err) {
             throw err
@@ -25,11 +19,8 @@ export class Commands {
 
     async getCommandOutput(actionId: string, agentId: string): Promise<object[]> {
         try {
-            let res = await this.http.get(
-                `${this.domain}/devices/output?action_id=${actionId}&agentid=${agentId}`,
-                { headers: this.reqHeaders },
-            )
-            return JSON.parse(res.data)
+            let res = await this.http.get(`devices/output?action_id=${actionId}&agentid=${agentId}`)
+            return res.data
         } catch (err) {
             throw err
         }

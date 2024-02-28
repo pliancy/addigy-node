@@ -1,12 +1,17 @@
-import { AxiosInstance } from 'axios'
-import { CustomFact, IAddigyInternalAuthObject } from '../../types'
+import axios from 'axios'
+import { Urls } from '../addigy.constants'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import { CustomFact } from './facts.types'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Facts {
-    domain = ''
-
-    reqHeaders = {}
-
-    constructor(private readonly http: AxiosInstance) {}
+    private readonly http = axios.create({
+        baseURL: `${Urls.appProd}/api/services/facts`,
+        ...getAxiosHttpAgents(),
+        headers: {
+            origin: Urls.appProd,
+        },
+    })
 
     async createCustomFact(
         authObject: IAddigyInternalAuthObject,
@@ -37,28 +42,22 @@ export class Facts {
             },
             return_type: 'string',
         }
-        const res = await this.http.post(
-            'https://app-prod.addigy.com/api/services/facts/custom',
-            body,
-            {
-                headers: {
-                    Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
-                },
+        const res = await this.http.post('custom', body, {
+            headers: {
+                Cookie: `auth_token=${authObject.authToken};`,
             },
-        )
-        return JSON.parse(res.data)
+        })
+        return res.data
     }
 
     async getCustomFacts(authObject: IAddigyInternalAuthObject): Promise<CustomFact[]> {
-        const res = await this.http.get('https://app-prod.addigy.com/api/services/facts/custom', {
+        const res = await this.http.get('custom', {
             headers: {
                 Cookie: `auth_token=${authObject.authToken};`,
-                origin: 'https://app-prod.addigy.com',
             },
         })
 
-        const results = JSON.parse(res.data)
+        const results = res.data
         return results.custom_facts ?? []
     }
 

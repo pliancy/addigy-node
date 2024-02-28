@@ -1,13 +1,15 @@
-import { IAddigyInternalAuthObject } from '../../types'
-import { AxiosInstance } from 'axios'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import axios from 'axios'
 import { UserRoles } from './user.types'
+import { Urls } from '../addigy.constants'
+import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Users {
-    domain = ''
-
-    reqHeaders = {}
-
-    constructor(private readonly http: AxiosInstance) {}
+    private readonly http = axios.create({
+        baseURL: 'https://app-prod.addigy.com/api/cloud/users',
+        ...getAxiosHttpAgents(),
+        headers: { origin: Urls.appProd },
+    })
 
     async createUser(
         authObject: IAddigyInternalAuthObject,
@@ -29,16 +31,11 @@ export class Users {
         }
 
         try {
-            let res = await this.http.post(
-                'https://app-prod.addigy.com/api/cloud/users/user',
-                postBody,
-                {
-                    headers: {
-                        Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
-                    },
+            let res = await this.http.post('user', postBody, {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
                 },
-            )
+            })
             return res.data
         } catch (err) {
             throw err
@@ -78,14 +75,11 @@ export class Users {
             postBody['id'] = user.id // Addigy requires the user ID to be both in the post body and in the REST URI
 
             let res = await this.http.put(
-                `https://app-prod.addigy.com/api/cloud/users/user/${
-                    user.id
-                }?user_email=${encodeURIComponent(user.email)}`,
+                `user/${user.id}?user_email=${encodeURIComponent(user.email)}`,
                 postBody,
                 {
                     headers: {
                         Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
                     },
                 },
             )
@@ -103,18 +97,15 @@ export class Users {
             if (!user) throw new Error(`No user with email ${email} exists.`)
 
             let res = await this.http.delete(
-                `https://app-prod.addigy.com/api/cloud/users/user/${
-                    user.id
-                }?user_email=${encodeURIComponent(email)}`,
+                `user/${user.id}?user_email=${encodeURIComponent(email)}`,
                 {
                     headers: {
                         Cookie: `auth_token=${authObject.authToken};`,
-                        origin: 'https://app-prod.addigy.com',
                     },
                 },
             )
 
-            return JSON.parse(res.data) // this will return "ok" if successful.
+            return res.data // this will return "ok" if successful.
         } catch (err) {
             throw err
         }
@@ -125,11 +116,10 @@ export class Users {
             let res = await this.http.get('https://app-prod.addigy.com/api/account', {
                 headers: {
                     Cookie: `auth_token=${authObject.authToken};`,
-                    origin: 'https://app-prod.addigy.com',
                 },
                 method: 'GET',
             })
-            return JSON.parse(res.data).users
+            return res.data.users
         } catch (err) {
             throw err
         }

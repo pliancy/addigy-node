@@ -1,19 +1,15 @@
 import { AxiosInstance } from 'axios'
-import { CreateSoftware, IAddigyInternalAuthObject } from '../../types'
+import { IAddigyInternalAuthObject } from '../auth/auth.types'
+import { CreateSoftware } from './software.types'
+import { Urls } from '../addigy.constants'
 
 export class Software {
-    domain = ''
-
-    reqHeaders = {}
-
     constructor(private readonly http: AxiosInstance) {}
 
     async getPublicSoftware(): Promise<object[]> {
         try {
-            let res = await this.http.get(`${this.domain}/catalog/public`, {
-                headers: this.reqHeaders,
-            })
-            return JSON.parse(res.data)
+            let res = await this.http.get(`catalog/public`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -21,10 +17,8 @@ export class Software {
 
     async getCustomSoftware(): Promise<object[]> {
         try {
-            let res = await this.http.get(`${this.domain}/custom-software`, {
-                headers: this.reqHeaders,
-            })
-            return JSON.parse(res.data)
+            let res = await this.http.get(`custom-software`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -32,11 +26,8 @@ export class Software {
 
     async getCustomSoftwareAllVersions(softwareId: string): Promise<object[]> {
         try {
-            let res = await this.http.get(
-                `${this.domain}/custom-software?identifier=${softwareId}`,
-                { headers: this.reqHeaders },
-            )
-            return JSON.parse(res.data)
+            let res = await this.http.get(`custom-software?identifier=${softwareId}`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -44,11 +35,8 @@ export class Software {
 
     async getCustomSoftwareSpecificVersion(instructionId: string): Promise<object[]> {
         try {
-            let res = await this.http.get(
-                `${this.domain}/custom-software?instructionid=${instructionId}`,
-                { headers: this.reqHeaders },
-            )
-            return JSON.parse(res.data)
+            let res = await this.http.get(`custom-software?instructionid=${instructionId}`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -85,9 +73,7 @@ export class Software {
         }
 
         try {
-            let res = await this.http.post(`${this.domain}/custom-software`, postBody, {
-                headers: this.reqHeaders,
-            })
+            let res = await this.http.post(`custom-software`, postBody)
             // Fun fact! This endpoint returns an empty string when successful. Yes, that is correct, an empty string...
             return res.data
         } catch (err) {
@@ -110,12 +96,12 @@ export class Software {
         authObject: IAddigyInternalAuthObject,
         software: CreateSoftware,
     ): Promise<Software> {
-        const res = await this.http.post('https://app.addigy.com/api/software', software, {
+        const res = await this.http.post('software', software, {
             headers: {
                 Cookie: `auth_token=${authObject.authToken};`,
-                origin: 'https://app-prod.addigy.com',
+                origin: Urls.appProd,
             },
         })
-        return JSON.parse(res.data)
+        return res.data
     }
 }

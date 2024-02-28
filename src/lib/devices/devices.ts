@@ -1,11 +1,7 @@
 import { AxiosInstance } from 'axios'
-import { IAddigyConfig } from '../../types'
+import { IAddigyConfig } from '../types'
 
 export class Devices {
-    reqHeaders = {}
-
-    domain = ''
-
     constructor(
         private readonly http: AxiosInstance,
         private readonly config: IAddigyConfig,
@@ -13,10 +9,8 @@ export class Devices {
 
     async getOnlineDevices(): Promise<object[]> {
         try {
-            let res = await this.http(`${this.domain}/devices/online`, {
-                headers: this.reqHeaders,
-            })
-            return JSON.parse(res.data)
+            let res = await this.http.get(`devices/online`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -24,10 +18,8 @@ export class Devices {
 
     async getDevices(): Promise<object[]> {
         try {
-            let res = await this.http(`${this.domain}/devices`, {
-                headers: this.reqHeaders,
-            })
-            return JSON.parse(res.data)
+            let res = await this.http.get(`devices`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -35,10 +27,8 @@ export class Devices {
 
     async getPolicyDevices(policyId: string): Promise<object[]> {
         try {
-            let res = await this.http(`${this.domain}/policies/devices?policy_id=${policyId}`, {
-                headers: this.reqHeaders,
-            })
-            return JSON.parse(res.data)
+            let res = await this.http.get(`policies/devices?policy_id=${policyId}`)
+            return res.data
         } catch (err) {
             throw err
         }
@@ -51,16 +41,13 @@ export class Devices {
         }
 
         try {
-            let res = await this.http(`${this.domain}/policies/devices`, {
+            let res = await this.http.post(`policies/devices`, postBody, {
                 headers: {
                     'client-id': this.config.clientId,
                     'client-secret': this.config.clientSecret,
                 },
-                method: 'POST',
-                form: true,
-                body: postBody,
             } as any)
-            return JSON.parse(res.data)
+            return res.data
         } catch (err) {
             throw err
         }

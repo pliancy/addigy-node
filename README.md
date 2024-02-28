@@ -141,14 +141,14 @@ await addigy.getUsers(impersonationObject)
 
 **createKernelExtensionPolicy()**
 
-This method allows you to create a Kernal Extension Policy.  This functions requires 4 parameters. The authObject, name of the Policy, allowing overrides, and the kernalExtension object. 
+This method allows you to create a Kernel Extension Policy.  This functions requires 4 parameters. The authObject, name of the Policy, allowing overrides, and the kernelExtension object. 
 
-The kernalExtensions object contains two arrays. allowedTeamIdentifers to pass a kernal extension's Team Identifier for approval or the allowedKernalExtensions to pass the Team Identifier and Bundle Identifiers. 
+The kernelExtensions object contains two arrays. allowedTeamIdentifers to pass a kernel extension's Team Identifier for approval or the allowedKernelExtensions to pass the Team Identifier and Bundle Identifiers. 
 
 Example: 
 
 ```javascript
-const kernalExtensions = { allowedKernalExtensions: [
+const kernelExtensions = { allowedKernelExtensions: [
     {teamIdentifier: '2JJNSDF9', bundleIdentifiers: ['com.bundle.com'
       ]
     }
@@ -157,7 +157,7 @@ const kernalExtensions = { allowedKernalExtensions: [
   ]
 }
 
-await addigy.createKernelExtensionPolicy( authObject, 'Name', true, kernalExtensions)
+await addigy.createKernelExtensionPolicy( authObject, 'Name', true, kernelExtensions)
 
 ```
 
