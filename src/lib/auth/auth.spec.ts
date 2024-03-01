@@ -17,6 +17,8 @@ describe('Auth', () => {
         auth = new Auth(config)
         // @ts-ignore
         auth['http'] = axios
+        // @ts-ignore
+        auth['httpApp'] = axios
     })
 
     describe('getAuthObject', () => {

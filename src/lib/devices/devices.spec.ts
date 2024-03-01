@@ -69,6 +69,60 @@ describe('Devices', () => {
         })
     })
 
+    describe('runCommand', () => {
+        it('runs command successfully', async () => {
+            // Mock the axios response
+            ;(axios.post as jest.Mock).mockResolvedValue({
+                data: ['commandData1', 'commandData2', 'commandData3'], // replace with your expected data structure
+            })
+
+            await expect(
+                devices.runCommand(['agentId1', 'agentId2'], 'testCommand'),
+            ).resolves.toEqual([
+                'commandData1',
+                'commandData2',
+                'commandData3', // replace with your expected data
+            ])
+        })
+
+        it('throws an error when the request fails', async () => {
+            // Mock the axios error
+            ;(axios.post as jest.Mock).mockImplementation(() => {
+                throw new Error('Network Error') // replace with your expected error
+            })
+
+            await expect(
+                devices.runCommand(['agentId1', 'agentId2'], 'testCommand'),
+            ).rejects.toThrow('Network Error')
+        })
+    })
+
+    describe('getCommandOutput', () => {
+        it('gets command output successfully', async () => {
+            // Mock the axios response
+            ;(axios.get as jest.Mock).mockResolvedValue({
+                data: ['outputData1', 'outputData2', 'outputData3'], // replace with your expected data structure
+            })
+
+            await expect(devices.getCommandOutput('actionId', 'agentId')).resolves.toEqual([
+                'outputData1',
+                'outputData2',
+                'outputData3', // replace with your expected data
+            ])
+        })
+
+        it('throws an error when the request fails', async () => {
+            // Mock the axios error
+            ;(axios.get as jest.Mock).mockImplementation(() => {
+                throw new Error('Network Error') // replace with your expected error
+            })
+
+            await expect(devices.getCommandOutput('actionId', 'agentId')).rejects.toThrow(
+                'Network Error',
+            )
+        })
+    })
+
     afterEach(() => {
         jest.clearAllMocks()
     })

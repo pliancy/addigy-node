@@ -5,7 +5,6 @@ import { Auth } from './auth/auth'
 import { Applications } from './applications/applications'
 import { Billing } from './billing/billing'
 import { Certs } from './certs/certs'
-import { Commands } from './commands/commands'
 import { MdmConfigurations } from './mdm/mdm-configurations'
 import { Devices } from './devices/devices'
 import { Facts } from './facts/facts'
@@ -48,7 +47,6 @@ describe('Addigy', () => {
         expect(addigy.apps).toBeInstanceOf(Applications)
         expect(addigy.billing).toBeInstanceOf(Billing)
         expect(addigy.certs).toBeInstanceOf(Certs)
-        expect(addigy.commands).toBeInstanceOf(Commands)
         expect(addigy.devices).toBeInstanceOf(Devices)
         expect(addigy.facts).toBeInstanceOf(Facts)
         expect(addigy.files).toBeInstanceOf(Files)

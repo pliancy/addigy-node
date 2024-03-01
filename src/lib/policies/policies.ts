@@ -1,9 +1,10 @@
 import { AxiosInstance } from 'axios'
+import { Policy } from './policies.types'
 
 export class Policies {
     constructor(private readonly http: AxiosInstance) {}
 
-    async getPolicies(): Promise<object[]> {
+    async getPolicies(): Promise<Policy[]> {
         try {
             let res = await this.http.get(`policies`)
             return res.data
@@ -15,7 +16,7 @@ export class Policies {
     async getPolicyInstructions(
         policyId: string,
         provider: string = 'ansible-profile',
-    ): Promise<object[]> {
+    ): Promise<Policy[]> {
         try {
             let res = await this.http.get(
                 `policies/instructions?provider=${provider}&policy_id=${policyId}`,
@@ -26,7 +27,7 @@ export class Policies {
         }
     }
 
-    async createPolicyInstructions(policyId: string, instructionId: string): Promise<object[]> {
+    async createPolicyInstructions(policyId: string, instructionId: string): Promise<Policy[]> {
         try {
             let res = await this.http.post(`policies/instructions`, {
                 instruction_id: instructionId,
@@ -42,7 +43,7 @@ export class Policies {
         policyId: string,
         instructionId: string,
         provider: string = 'ansible-profile',
-    ): Promise<object[]> {
+    ): Promise<Policy[]> {
         try {
             let res = await this.http.delete(
                 `policies/instructions?policy_id=${policyId}&instruction_id=${instructionId}&provider=${provider}`,
