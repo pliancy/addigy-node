@@ -1,4 +1,4 @@
-import { AlertStatus } from './alert.types'
+import { Alert, AlertStatus } from './alert.types'
 import { AxiosInstance } from 'axios'
 
 export class Alerts {
@@ -8,7 +8,7 @@ export class Alerts {
         status: AlertStatus,
         page: number = 1,
         pageLength: number = 10,
-    ): Promise<object[]> {
+    ): Promise<Alert[]> {
         let statusUri = ''
         if (status) {
             statusUri = `&status=${status}`

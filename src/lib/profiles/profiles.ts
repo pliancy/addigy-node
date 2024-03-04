@@ -1,9 +1,10 @@
 import { AxiosInstance } from 'axios'
+import { Profile } from './profiles.types'
 
 export class Profiles {
     constructor(private readonly http: AxiosInstance) {}
 
-    async getProfiles(instructionId?: string): Promise<object[]> {
+    async getProfiles(instructionId?: string): Promise<Profile[]> {
         let instructionUri = ''
         if (instructionId !== undefined) {
             instructionUri = `?instruction_id=${instructionId}`
@@ -17,7 +18,7 @@ export class Profiles {
         }
     }
 
-    async createProfile(name: string, payloads: object[]): Promise<object[]> {
+    async createProfile(name: string, payloads: object[]): Promise<Profile> {
         let postBody: any = {
             name: name,
             payloads: payloads,
@@ -31,7 +32,7 @@ export class Profiles {
         }
     }
 
-    async updateProfile(instructionId: string, payloads: object[]): Promise<object[]> {
+    async updateProfile(instructionId: string, payloads: object[]): Promise<Profile> {
         let postBody: any = {
             instruction_id: instructionId,
             payloads: payloads,
@@ -45,7 +46,7 @@ export class Profiles {
         }
     }
 
-    async deleteProfile(instructionId: string): Promise<object[]> {
+    async deleteProfile(instructionId: string): Promise<Profile> {
         try {
             let res = await this.http.delete(`profiles`, {
                 params: { instruction_id: instructionId },

@@ -10,6 +10,12 @@ export class Auth {
         ...getAxiosHttpAgents(),
     })
 
+    private readonly httpApp = axios.create({
+        baseURL: Urls.app,
+        ...getAxiosHttpAgents(),
+        headers: { origin: Urls.app },
+    })
+
     constructor(private readonly config: IAddigyConfig) {}
 
     async getAuthObject(): Promise<IAddigyInternalAuthObject> {
@@ -48,10 +54,9 @@ export class Auth {
         }
 
         try {
-            let res = await this.http.post('api/impersonation', postBody, {
+            let res = await this.httpApp.post('api/impersonation', postBody, {
                 headers: {
                     Cookie: `prod_auth_token=${authObject.authToken};`,
-                    origin: Urls.app,
                 },
             })
 

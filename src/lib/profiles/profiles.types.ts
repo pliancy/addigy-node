@@ -20,3 +20,54 @@ export interface CustomProfileJSONData {
     payload_display_name: string
     payload_content: any[]
 }
+
+export interface Profile {
+    category: string
+    commands: string[]
+    label: string
+    editid: string
+    profiles: string[]
+    orgid: string
+    type: string
+    public: boolean
+    policy_restricted: boolean
+    instructionId: string
+    priority?: string
+    version?: string
+    base_identifier?: string
+    remove_script: string
+    identifier?: string
+    icon: string
+    run_on_success: boolean
+    tcc_version: number
+    software_icon: {
+        file_path: string
+        file_name: string
+        id: string
+        filename: string
+        provider: string
+        md5_hash: string
+    }
+    description: string
+    user_email: string
+    downloads: Record<string, unknown>[]
+    price_per_device: number
+    user_instruction?: string
+    scopes: string[]
+    firewall_instruction?: string
+    name: string
+    profile: {
+        payload_uuid: string
+        payloads: string[]
+        payload_identifier: string
+        downloads_dir: string
+        payload_version: number
+        payload_type: string
+    }
+    installation_script: string
+    status_on_skipped: string
+    condition: string
+    archived: boolean
+    provider: string
+    dns_instruction: null
+}

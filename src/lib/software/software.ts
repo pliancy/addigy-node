@@ -1,12 +1,12 @@
 import { AxiosInstance } from 'axios'
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
-import { CreateSoftware } from './software.types'
+import { CreateSoftware, Software as ISoftware } from './software.types'
 import { Urls } from '../addigy.constants'
 
 export class Software {
     constructor(private readonly http: AxiosInstance) {}
 
-    async getPublicSoftware(): Promise<object[]> {
+    async getPublicSoftware(): Promise<ISoftware[]> {
         try {
             let res = await this.http.get(`catalog/public`)
             return res.data
@@ -15,7 +15,7 @@ export class Software {
         }
     }
 
-    async getCustomSoftware(): Promise<object[]> {
+    async getCustomSoftware(): Promise<ISoftware[]> {
         try {
             let res = await this.http.get(`custom-software`)
             return res.data
@@ -24,7 +24,7 @@ export class Software {
         }
     }
 
-    async getCustomSoftwareAllVersions(softwareId: string): Promise<object[]> {
+    async getCustomSoftwareAllVersions(softwareId: string): Promise<ISoftware[]> {
         try {
             let res = await this.http.get(`custom-software?identifier=${softwareId}`)
             return res.data

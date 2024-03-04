@@ -3,7 +3,6 @@ import { Alerts } from './alerts/alerts'
 import { Applications } from './applications/applications'
 import { Billing } from './billing/billing'
 import { Certs } from './certs/certs'
-import { Commands } from './commands/commands'
 import { MdmConfigurations } from './mdm/mdm-configurations'
 import { Devices } from './devices/devices'
 import { Facts } from './facts/facts'
@@ -32,8 +31,6 @@ export class Addigy {
     billing: Billing
 
     certs: Certs
-
-    commands: Commands
 
     devices: Devices
 
@@ -80,7 +77,6 @@ export class Addigy {
         this.apps = new Applications(this.http)
         this.billing = new Billing()
         this.certs = new Certs()
-        this.commands = new Commands(this.http)
         this.devices = new Devices(this.http, this.config)
         this.facts = new Facts()
         this.files = new Files(this.config)
