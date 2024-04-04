@@ -6,6 +6,8 @@ import {
     CreateWebContentFilterPayload,
     Extension,
     KernelExtensionPayload,
+    MdmConfiguration,
+    MdmConfigurationInput,
     NotificationSettings,
     NotificationSettingsPayload,
     PPPCInput,
@@ -417,7 +419,7 @@ export class MdmPolicies {
                 'com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy',
             payload_type: 'com.apple.TCC.configuration-profile-policy',
             payload_display_name: name,
-            payload_group_id: groupUUID,
+            payload_group_id: uuidv4(),
             payload_version: 1,
             payload_identifier: `com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy.${groupUUID}`,
             payload_uuid: uuidv4(),
@@ -484,6 +486,34 @@ export class MdmPolicies {
                 },
             },
         )
+        return res.data
+    }
+
+    async createMdmCertificate(
+        authObject: IAddigyInternalAuthObject,
+        mdmConfigurationInput: MdmConfigurationInput,
+    ) {
+        const groupUUID = uuidv4()
+        const payload: MdmConfiguration = {
+            addigy_payload_type: 'com.addigy.certificate.com.apple.security.root',
+            payload_type: 'com.apple.security.root',
+            payload_version: 1,
+            payload_group_id: groupUUID,
+            payload_identifier: `com.addigy.certificate.com.apple.security.root.${groupUUID}`,
+            payload_uuid: uuidv4(),
+            ...mdmConfigurationInput,
+        }
+
+        const res = await this.http.post(
+            '/',
+            { payloads: [payload] },
+            {
+                headers: {
+                    Cookie: `auth_token=${authObject.authToken};`,
+                },
+            },
+        )
+
         return res.data
     }
 }
