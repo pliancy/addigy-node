@@ -96,10 +96,10 @@ export class Software {
         authObject: IAddigyInternalAuthObject,
         software: CreateSoftware,
     ): Promise<Software> {
-        const res = await this.http.post('software', software, {
+        const res = await this.http.post(`${Urls.app}/api/software`, software, {
             headers: {
                 Cookie: `auth_token=${authObject.authToken};`,
-                origin: Urls.appProd,
+                origin: Urls.app,
             },
         })
         return res.data

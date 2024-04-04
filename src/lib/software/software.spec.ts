@@ -69,10 +69,10 @@ describe('Software', () => {
         const result = await software.createSoftwareInternal(authObject, softwareData)
 
         expect(result).toEqual(mockData)
-        expect(mockAxios.post).toHaveBeenCalledWith('software', softwareData, {
+        expect(mockAxios.post).toHaveBeenCalledWith(`${Urls.app}/api/software`, softwareData, {
             headers: {
                 Cookie: `auth_token=${authObject.authToken};`,
-                origin: Urls.appProd,
+                origin: Urls.app,
             },
         })
     })
