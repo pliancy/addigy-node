@@ -501,6 +501,7 @@ export class MdmPolicies {
             payload_group_id: groupUUID,
             payload_identifier: `com.addigy.certificate.com.apple.security.root.${groupUUID}`,
             payload_uuid: uuidv4(),
+            addigy_payload_version: 0,
             ...mdmConfigurationInput,
         }
 
