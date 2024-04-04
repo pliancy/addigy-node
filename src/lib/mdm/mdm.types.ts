@@ -239,3 +239,13 @@ export interface PoliciesMdmPayload {
     configuration_id: string
     policy_id: string
 }
+
+export interface MdmConfigurationInput {
+    payload_priority: number
+    payload_content: string
+    payload_certificate_file_name: string
+    addigy_payload_version: number
+    payload_display_name: string
+}
+
+export type MdmConfiguration = MdmConfigurationInput & Payload

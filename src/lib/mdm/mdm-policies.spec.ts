@@ -50,6 +50,11 @@ describe('MdmPolicies', () => {
             args: [[] as PPPCInput[]],
             name: 'privacy preferences policy control',
         },
+        {
+            method: 'createMdmCertificate',
+            args: [[] as PPPCInput[]],
+            name: 'mdm certificate',
+        },
     ]
 
     for (const test of methods) {
