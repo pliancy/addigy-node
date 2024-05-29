@@ -14,15 +14,26 @@ export class MdmProfiles {
         headers: { origin: Urls.appProd },
     })
 
+    /**
+     * Create a custom profile
+     * @param authObject - The auth object
+     * @param name - The name of the custom profile
+     * @param customProfileBase64 - The base64 encoded custom profile
+     * @param supportedOsVersions - The supported OS versions -
+     * @param payloadScope - The payload scope
+     * @param is_profile_signed - Whether the profile is signed
+     */
     async createCustomProfile(
         authObject: IAddigyInternalAuthObject,
         name: string,
-        customProfileText: string,
+        customProfileBase64: string,
         supportedOsVersions: SupportedOsVersions,
         payloadScope: 'System' | 'User' = 'System',
         is_profile_signed = false,
     ): Promise<any> {
         const groupUUID = uuidv4()
+
+        const customProfileText = Buffer.from(customProfileBase64, 'base64').toString('utf-8')
 
         const customProfileJson = plist.parse(customProfileText)
         // Keys for customProfileJson need to be snake_case
@@ -33,7 +44,6 @@ export class MdmProfiles {
             },
             {} as any,
         )
-        const customProfileBase64 = Buffer.from(customProfileText).toString('base64')
 
         const payload: CustomProfilePayload = {
             addigy_payload_type: 'com.addigy.custom.mdm.payload',
