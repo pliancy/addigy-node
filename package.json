@@ -10,7 +10,7 @@
     "axios": "1.7.2",
     "http-cookie-agent": "6.0.5",
     "tough-cookie": "4.1.4",
-    "uuid": "9.0.1"
+    "uuid": "10.0.0"
   },
   "description": "",
   "devDependencies": {
@@ -19,7 +19,7 @@
     "@types/jest": "29.5.12",
     "@types/node": "20.12.12",
     "@types/tough-cookie": "4.0.5",
-    "@types/uuid": "9.0.8",
+    "@types/uuid": "10.0.0",
     "commitizen": "4.3.0",
     "concurrently": "8.2.2",
     "cpy-cli": "5.0.0",
