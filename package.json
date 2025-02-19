@@ -10,7 +10,7 @@
     "axios": "1.7.2",
     "http-cookie-agent": "6.0.5",
     "tough-cookie": "4.1.4",
-    "uuid": "9.0.1"
+    "uuid": "11.1.0"
   },
   "description": "",
   "devDependencies": {
