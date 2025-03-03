@@ -17,7 +17,7 @@
     "@pliancy/eslint-config-ts": "1.1.1",
     "@pliancy/semantic-release-config-npm": "2.2.0",
     "@types/jest": "29.5.12",
-    "@types/node": "20.12.12",
+    "@types/node": "22.13.9",
     "@types/tough-cookie": "4.0.5",
     "@types/uuid": "9.0.8",
     "commitizen": "4.3.0",
@@ -60,7 +60,7 @@
   "types": "index.d.ts",
   "version": "2.10.4",
   "volta": {
-    "node": "20.12.1",
+    "node": "22.14.0",
     "yarn": "1.22.22"
   }
 }
