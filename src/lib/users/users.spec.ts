@@ -20,6 +20,17 @@ describe('Users', () => {
         jest.clearAllMocks()
     })
 
+    it('returns empty given no users in response', async () => {
+        mockAxios.get.mockResolvedValue({ data: {} })
+        await expect(users.getUsers(authObject)).resolves.toEqual([])
+    })
+
+    it('gets users', async () => {
+        const u = [{ id: 'user1' }]
+        mockAxios.get.mockResolvedValue({ data: { users: u } })
+        await expect(users.getUsers(authObject)).resolves.toEqual(u)
+    })
+
     it('should create a new user', async () => {
         const mockData = [{ id: 'user1' }]
         mockAxios.post.mockResolvedValue({ data: mockData })
