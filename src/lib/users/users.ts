@@ -1,6 +1,6 @@
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
 import axios from 'axios'
-import { UserRoles } from './user.types'
+import { User, UserRoles } from './user.types'
 import { Urls } from '../addigy.constants'
 import { getAxiosHttpAgents } from '../addigy.utils'
 
@@ -111,7 +111,7 @@ export class Users {
         }
     }
 
-    async getUsers(authObject: IAddigyInternalAuthObject): Promise<object[]> {
+    async getUsers(authObject: IAddigyInternalAuthObject): Promise<User[]> {
         try {
             let res = await this.http.get('https://app-prod.addigy.com/api/account', {
                 headers: {
@@ -119,7 +119,7 @@ export class Users {
                 },
                 method: 'GET',
             })
-            return res.data.users
+            return res?.data?.users ?? []
         } catch (err) {
             throw err
         }

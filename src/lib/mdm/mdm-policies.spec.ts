@@ -21,7 +21,7 @@ describe('MdmPolicies', () => {
         mdmPolicies = new MdmPolicies()
         // @ts-ignore
         mdmPolicies['http'] = mockedAxios
-        mockedUuid.mockReturnValue('mocked-uuid')
+        mockedUuid.mockReturnValue(new Uint8Array())
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
     })
 
