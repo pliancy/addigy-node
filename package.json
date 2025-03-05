@@ -58,7 +58,7 @@
     "tsc": "tsc -p tsconfig.build.json"
   },
   "types": "index.d.ts",
-  "version": "2.10.4",
+  "version": "2.10.5",
   "volta": {
     "node": "22.14.0",
     "yarn": "1.22.22"
