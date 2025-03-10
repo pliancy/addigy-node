@@ -17,7 +17,7 @@
     "@pliancy/eslint-config-ts": "1.1.1",
     "@pliancy/semantic-release-config-npm": "2.2.0",
     "@types/jest": "29.5.14",
-    "@types/node": "22.13.9",
+    "@types/node": "22.13.10",
     "@types/tough-cookie": "4.0.5",
     "@types/uuid": "10.0.0",
     "commitizen": "4.3.1",
@@ -29,8 +29,8 @@
     "open": "10.1.0",
     "pinst": "3.0.0",
     "rimraf": "6.0.1",
-    "ts-jest": "29.1.4",
-    "typescript": "5.4.5"
+    "ts-jest": "29.2.6",
+    "typescript": "5.8.2"
   },
   "keywords": [
     "addigy",
