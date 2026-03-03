@@ -8,7 +8,10 @@ import {
 export class PaginationV2 {
     private static readonly DEFAULT_PER_PAGE = 100
 
-    static buildRequestBody(baseRequest: V2ListRequestBody, options?: V2ListOptions): V2ListRequestBody {
+    static buildRequestBody(
+        baseRequest: V2ListRequestBody,
+        options?: V2ListOptions,
+    ): V2ListRequestBody {
         const requestBody: V2ListRequestBody = {
             ...baseRequest,
             page: options?.page ?? 1,

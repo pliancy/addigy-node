@@ -20,7 +20,7 @@ describe('MdmProfiles', () => {
     let mdmProfile: any
 
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    const mockedUuid = v4 as jest.MockedFunction<typeof v4>
+    const mockedUuid = v4 as unknown as jest.Mock
     const mockedPlist = plist.parse as jest.MockedFunction<typeof plist.parse>
 
     beforeEach(() => {

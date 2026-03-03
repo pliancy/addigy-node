@@ -36,5 +36,4 @@ describe('CertsV2', () => {
             per_page: 1,
         })
     })
-
 })

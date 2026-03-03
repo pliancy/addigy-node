@@ -48,5 +48,4 @@ describe('PoliciesV2', () => {
         expect(result).toEqual({ id: 'policy-new' })
         expect(http.post).toHaveBeenCalledWith('/policies', { name: 'My Policy' })
     })
-
 })

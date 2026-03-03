@@ -36,5 +36,4 @@ describe('DevicesV2', () => {
             per_page: 1,
         })
     })
-
 })
