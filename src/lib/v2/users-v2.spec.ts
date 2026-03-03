@@ -57,7 +57,7 @@ describe('UsersV2', () => {
         })
     })
 
-    it('updates user and maps groups to policies', async () => {
+    it('updates user with provided policies', async () => {
         const http = {
             put: jest.fn().mockResolvedValue({ data: { ok: true } }),
         }

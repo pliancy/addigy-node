@@ -29,7 +29,7 @@ export class UsersV2 {
     async update(
         email: string,
         name: string,
-        groups: string[],
+        policies: string[],
         role: string,
         phone?: string,
     ): Promise<object> {
@@ -37,7 +37,7 @@ export class UsersV2 {
             email,
             name,
             role,
-            policies: groups,
+            policies,
         }
 
         if (typeof phone === 'string') {
