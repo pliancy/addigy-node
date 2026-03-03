@@ -13,7 +13,7 @@ describe('MdmPolicies', () => {
     let name: string
     let mdmPolicies: MdmPolicies
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    const mockedUuid = uuidv4 as jest.MockedFunction<typeof uuidv4>
+    const mockedUuid = uuidv4 as unknown as jest.Mock
 
     beforeEach(() => {
         authObject = { authToken: 'mocked-token' } as IAddigyInternalAuthObject
@@ -21,7 +21,7 @@ describe('MdmPolicies', () => {
         mdmPolicies = new MdmPolicies()
         // @ts-ignore
         mdmPolicies['http'] = mockedAxios
-        mockedUuid.mockReturnValue(new Uint8Array())
+        mockedUuid.mockReturnValue('mocked-uuid')
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
     })
 

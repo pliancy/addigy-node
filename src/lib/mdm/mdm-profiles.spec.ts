@@ -20,7 +20,7 @@ describe('MdmProfiles', () => {
     let mdmProfile: any
 
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    const mockedUuid = v4 as jest.MockedFunction<typeof v4>
+    const mockedUuid = v4 as unknown as jest.Mock
     const mockedPlist = plist.parse as jest.MockedFunction<typeof plist.parse>
 
     beforeEach(() => {
@@ -34,7 +34,7 @@ describe('MdmProfiles', () => {
         mdmProfiles = new MdmProfiles()
         // @ts-ignore
         mdmProfiles['http'] = mockedAxios
-        mockedUuid.mockReturnValue(new Uint8Array())
+        mockedUuid.mockReturnValue('mocked-uuid')
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
         mockedPlist.mockReturnValue({})
     })
