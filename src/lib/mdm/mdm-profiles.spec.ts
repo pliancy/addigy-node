@@ -2,12 +2,15 @@ import { MdmProfiles } from './mdm-profiles'
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
 import { SupportedOsVersions } from '../types'
 import axios from 'axios'
-import { v4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import plist from '@expo/plist'
 
 jest.mock('axios')
-jest.mock('uuid')
 jest.mock('@expo/plist')
+jest.mock('crypto', () => ({
+    ...jest.requireActual('crypto'),
+    randomUUID: jest.fn(),
+}))
 
 describe('MdmProfiles', () => {
     let authObject: IAddigyInternalAuthObject
@@ -20,7 +23,7 @@ describe('MdmProfiles', () => {
     let mdmProfile: any
 
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    const mockedUuid = v4 as unknown as jest.Mock
+    const mockedRandomUUID = randomUUID as jest.MockedFunction<typeof randomUUID>
     const mockedPlist = plist.parse as jest.MockedFunction<typeof plist.parse>
 
     beforeEach(() => {
@@ -34,7 +37,7 @@ describe('MdmProfiles', () => {
         mdmProfiles = new MdmProfiles()
         // @ts-ignore
         mdmProfiles['http'] = mockedAxios
-        mockedUuid.mockReturnValue('mocked-uuid')
+        mockedRandomUUID.mockReturnValue('00000000-0000-4000-8000-000000000000')
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
         mockedPlist.mockReturnValue({})
     })

@@ -1,19 +1,22 @@
 import axios from 'axios'
 import { MdmPolicies } from './mdm-policies'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
 import { CreateWebContentFilterPayload, PPPCInput, ServiceManagementPayloadRule } from './mdm.types'
 import { FilevaultPayload } from '../files/files.types'
 
 jest.mock('axios')
-jest.mock('uuid')
+jest.mock('crypto', () => ({
+    ...jest.requireActual('crypto'),
+    randomUUID: jest.fn(),
+}))
 
 describe('MdmPolicies', () => {
     let authObject: IAddigyInternalAuthObject
     let name: string
     let mdmPolicies: MdmPolicies
     const mockedAxios = axios as jest.Mocked<typeof axios>
-    const mockedUuid = uuidv4 as unknown as jest.Mock
+    const mockedRandomUUID = randomUUID as jest.MockedFunction<typeof randomUUID>
 
     beforeEach(() => {
         authObject = { authToken: 'mocked-token' } as IAddigyInternalAuthObject
@@ -21,7 +24,7 @@ describe('MdmPolicies', () => {
         mdmPolicies = new MdmPolicies()
         // @ts-ignore
         mdmPolicies['http'] = mockedAxios
-        mockedUuid.mockReturnValue('mocked-uuid')
+        mockedRandomUUID.mockReturnValue('00000000-0000-4000-8000-000000000000')
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
     })
 

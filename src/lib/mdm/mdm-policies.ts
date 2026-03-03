@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Urls } from '../addigy.constants'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
 import {
     CreateWebContentFilterPayload,
@@ -48,8 +48,8 @@ export class MdmPolicies {
             allowedKernelExtensions?: Extension[]
         },
     ): Promise<any> {
-        let payloadUUID = uuidv4()
-        let groupUUID = uuidv4()
+        let payloadUUID = randomUUID()
+        let groupUUID = randomUUID()
 
         const payload: KernelExtensionPayload = {
             addigy_payload_type:
@@ -115,7 +115,7 @@ export class MdmPolicies {
             allowedTeamIdentifiers?: string[]
         },
     ): Promise<any> {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
 
         const payload: SystemExtensionPayload = {
             addigy_payload_type:
@@ -123,7 +123,7 @@ export class MdmPolicies {
             payload_type: 'com.apple.system-extension-policy',
             payload_version: 1,
             payload_identifier: `com.addigy.syspolicy.system-extension-policy.com.apple.system-extension-policy.${groupUUID}`,
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             payload_group_id: groupUUID,
             payload_enabled: true,
             payload_display_name: name,
@@ -169,14 +169,14 @@ export class MdmPolicies {
         name: string,
         notificationSettings: NotificationSettings[],
     ): Promise<any> {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
 
         const payload: NotificationSettingsPayload = {
             addigy_payload_type: 'com.addigy.notifications.com.apple.notificationsettings',
             payload_type: 'com.apple.notificationsettings',
             payload_version: 1,
             payload_identifier: `com.addigy.notifications.com.apple.notificationsettings.${groupUUID}`,
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             payload_group_id: groupUUID,
             payload_display_name: name,
             notification_settings: notificationSettings,
@@ -200,7 +200,7 @@ export class MdmPolicies {
         rules: ServiceManagementPayloadRule[],
         priority = 9,
     ): Promise<any> {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
 
         const payload: ServiceManagementPayload = {
             addigy_payload_type: 'com.addigy.servicemanagement.com.apple.servicemanagement',
@@ -212,7 +212,7 @@ export class MdmPolicies {
             payload_identifier: `com.addigy.servicemanagement.com.apple.servicemanagement.${groupUUID}`,
             payload_priority: priority,
             payload_type: 'com.apple.servicemanagement',
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             payload_version: 1,
             policy_restricted: false,
             requires_device_supervision: false,
@@ -249,7 +249,7 @@ export class MdmPolicies {
         webContentPayload: CreateWebContentFilterPayload,
         priority = 9,
     ) {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
         const payload: WebContentFilterPayload = {
             addigy_payload_type: 'com.addigy.webcontent-filter.com.apple.webcontent-filter',
             addigy_payload_version: 2,
@@ -273,7 +273,7 @@ export class MdmPolicies {
             payload_identifier: `com.addigy.webcontent-filter.com.apple.webcontent-filter.${groupUUID}`,
             payload_priority: priority,
             payload_type: 'com.apple.webcontent-filter',
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             payload_version: 1,
             permitted_urls: null,
             policy_restricted: false,
@@ -305,8 +305,8 @@ export class MdmPolicies {
         filevault: FilevaultRequest,
         payloadPriority: number = 1,
     ) {
-        const groupUUID = uuidv4()
-        const encryptCertPayloadUUID = uuidv4()
+        const groupUUID = randomUUID()
+        const encryptCertPayloadUUID = randomUUID()
 
         const basePayload = {
             payload_display_name: name,
@@ -322,7 +322,7 @@ export class MdmPolicies {
                 payload_type: 'com.apple.MCX.FileVault2',
                 addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.MCX.FileVault2',
                 payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.FileVault2.${groupUUID}`,
-                payload_uuid: uuidv4(),
+                payload_uuid: randomUUID(),
                 enable: filevault.enable ? 'On' : 'Off',
                 defer: filevault.defer,
                 use_recovery_key: true,
@@ -342,7 +342,7 @@ export class MdmPolicies {
                 payload_type: 'com.apple.MCX',
                 addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.MCX',
                 payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.${groupUUID} `,
-                payload_uuid: uuidv4(),
+                payload_uuid: randomUUID(),
                 destroy_fv_key_on_standby:
                     filevault.destroyFvKeyOnStandby === undefined
                         ? null
@@ -358,7 +358,7 @@ export class MdmPolicies {
                     addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1',
                     payload_type: 'com.apple.security.pkcs1',
                     payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.pkcs1.${groupUUID}`,
-                    payload_uuid: uuidv4(),
+                    payload_uuid: randomUUID(),
                     is_from_security_profile: true,
                 },
                 {
@@ -367,7 +367,7 @@ export class MdmPolicies {
                         'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow',
                     payload_type: 'com.apple.security.FDERecoveryKeyEscrow',
                     payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryKeyEscrow.${groupUUID}`,
-                    payload_uuid: uuidv4(),
+                    payload_uuid: randomUUID(),
                     encrypt_cert_payload_uuid: encryptCertPayloadUUID,
                     location: 'Key will be escrowed to an Addigy secure database.',
                 },
@@ -377,7 +377,7 @@ export class MdmPolicies {
                         'com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect',
                     payload_type: 'com.apple.security.FDERecoveryRedirect',
                     payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.FDERecoveryRedirect.${groupUUID}`,
-                    payload_uuid: uuidv4(),
+                    payload_uuid: randomUUID(),
                     encrypt_cert_payload_uuid: encryptCertPayloadUUID,
                     redirect_url: '',
                 },
@@ -413,16 +413,16 @@ export class MdmPolicies {
         name: string,
         pppcPolicy: PPPCInput[],
     ): Promise<any> {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
         const payload: PPPCPayload = {
             addigy_payload_type:
                 'com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy',
             payload_type: 'com.apple.TCC.configuration-profile-policy',
             payload_display_name: name,
-            payload_group_id: uuidv4(),
+            payload_group_id: randomUUID(),
             payload_version: 1,
             payload_identifier: `com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy.${groupUUID}`,
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             services: {
                 accessibility: [],
                 address_book: [],
@@ -459,7 +459,7 @@ export class MdmPolicies {
                     static_code: e.staticCode ?? false,
                     predefined_app: null,
                     manual_selection: true,
-                    rowId: uuidv4(),
+                    rowId: randomUUID(),
                 }
                 if (e.service === 'screen_capture' && e.authorization) {
                     service.authorization = e.authorization
@@ -493,14 +493,14 @@ export class MdmPolicies {
         authObject: IAddigyInternalAuthObject,
         mdmConfigurationInput: MdmConfigurationInput,
     ) {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
         const payload: MdmConfiguration = {
             addigy_payload_type: 'com.addigy.certificate.com.apple.security.root',
             payload_type: 'com.apple.security.root',
             payload_version: 1,
             payload_group_id: groupUUID,
             payload_identifier: `com.addigy.certificate.com.apple.security.root.${groupUUID}`,
-            payload_uuid: uuidv4(),
+            payload_uuid: randomUUID(),
             addigy_payload_version: 0,
             ...mdmConfigurationInput,
         }
