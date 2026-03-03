@@ -34,7 +34,7 @@ describe('MdmProfiles', () => {
         mdmProfiles = new MdmProfiles()
         // @ts-ignore
         mdmProfiles['http'] = mockedAxios
-        mockedUuid.mockReturnValue(new Uint8Array())
+        mockedUuid.mockReturnValue('mocked-uuid')
         mockedAxios.post.mockResolvedValue({ data: 'mocked-data' })
         mockedPlist.mockReturnValue({})
     })
