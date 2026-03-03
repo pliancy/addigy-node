@@ -1,21 +1,26 @@
 import { AxiosInstance } from 'axios'
 import { PaginationV2 } from './pagination-v2'
-import { V2ListOptions, V2ListRequestBody } from './v2.types'
+import {
+    CertsListResponse,
+    InstalledCertificate,
+    V2ListOptions,
+    V2ListRequestBody,
+} from './v2.types'
 
 export class CertsV2 {
     constructor(private readonly http: AxiosInstance) {}
 
-    async list(options?: V2ListOptions): Promise<object[]> {
+    async list(options?: V2ListOptions): Promise<InstalledCertificate[]> {
         const baseRequest: V2ListRequestBody = {}
 
-        return PaginationV2.fetchItems<object>(async ({ page, per_page }) => {
+        return PaginationV2.fetchItems<InstalledCertificate>(async ({ page, per_page }) => {
             const requestBody = PaginationV2.buildRequestBody(baseRequest, {
                 ...options,
                 page,
                 perPage: per_page,
             })
             const response = await this.http.post('/mdm/certificates/query', requestBody)
-            return response.data
+            return response.data as CertsListResponse
         }, options)
     }
 }
