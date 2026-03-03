@@ -1,6 +1,6 @@
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
 import { SupportedOsVersions } from '../types'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import plist from '@expo/plist'
 import { CustomProfilePayload } from '../profiles/profiles.types'
 import axios from 'axios'
@@ -31,7 +31,7 @@ export class MdmProfiles {
         payloadScope: 'System' | 'User' = 'System',
         is_profile_signed = false,
     ): Promise<any> {
-        const groupUUID = uuidv4()
+        const groupUUID = randomUUID()
 
         const customProfileText = Buffer.from(customProfileBase64, 'base64').toString('utf-8')
 
@@ -50,7 +50,7 @@ export class MdmProfiles {
             payload_type: 'custom',
             payload_version: 1,
             payload_identifier: `com.addigy.custom.mdm.payload.${groupUUID}`,
-            payload_uuid: `custom-profile-${uuidv4()}`,
+            payload_uuid: `custom-profile-${randomUUID()}`,
             payload_group_id: groupUUID,
             payload_display_name: name,
             is_profile_signed,
