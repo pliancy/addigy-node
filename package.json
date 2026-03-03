@@ -45,10 +45,10 @@
     "url": "https://github.com/pliancy/addigy-node"
   },
   "scripts": {
-    "build": "concurrently 'yarn clean' 'yarn test' 'yarn tsc' 'yarn copy'",
+    "build": "yarn clean && yarn test && yarn tsc && yarn copy",
     "build:check": "tsc --noEmit",
     "clean": "rimraf coverage dist tmp",
-    "copy": "pinst --disable && cpy package.json dist && cpy README.md dist && pinst --enable",
+    "copy": "pinst --disable && mkdir -p dist && cpy package.json dist/ && cpy README.md dist/ && pinst --enable",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "postinstall": "husky install",
     "qa": "concurrently 'yarn lint' 'yarn test' ' yarn clean' 'yarn build:check'",
