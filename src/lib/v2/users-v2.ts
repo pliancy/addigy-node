@@ -1,18 +1,26 @@
 import { AxiosInstance } from 'axios'
 import { PaginationV2 } from './pagination-v2'
-import { V2ListOptions, V2ListRequestBody } from './v2.types'
+import {
+    OrganizationUser,
+    UserRemoveResponse,
+    UserUpdateRequest,
+    UserUpdateResponse,
+    UsersListResponse,
+    V2ListOptions,
+    V2ListRequestBody,
+} from './v2.types'
 
 export class UsersV2 {
     constructor(private readonly http: AxiosInstance) {}
 
-    async get(organizationId: string, options?: V2ListOptions): Promise<object[]> {
+    async get(organizationId: string, options?: V2ListOptions): Promise<OrganizationUser[]> {
         return this.list(organizationId, options)
     }
 
-    async list(organizationId: string, options?: V2ListOptions): Promise<object[]> {
+    async list(organizationId: string, options?: V2ListOptions): Promise<OrganizationUser[]> {
         const baseRequest: V2ListRequestBody = {}
 
-        return PaginationV2.fetchItems<object>(async ({ page, per_page }) => {
+        return PaginationV2.fetchItems<OrganizationUser>(async ({ page, per_page }) => {
             const requestBody = PaginationV2.buildRequestBody(baseRequest, {
                 ...options,
                 page,
@@ -22,7 +30,7 @@ export class UsersV2 {
                 `/o/${encodeURIComponent(organizationId)}/users/query`,
                 requestBody,
             )
-            return response.data
+            return response.data as UsersListResponse
         }, options)
     }
 
@@ -32,8 +40,8 @@ export class UsersV2 {
         policies: string[],
         role: string,
         phone?: string,
-    ): Promise<object> {
-        const requestBody: Record<string, unknown> = {
+    ): Promise<UserUpdateResponse> {
+        const requestBody: UserUpdateRequest = {
             email,
             name,
             role,
@@ -45,15 +53,15 @@ export class UsersV2 {
         }
 
         const response = await this.http.put('/users', requestBody)
-        return response.data
+        return response.data as UserUpdateResponse
     }
 
-    async remove(email: string): Promise<object> {
+    async remove(email: string): Promise<UserRemoveResponse> {
         const response = await this.http.delete('/users', {
             params: {
                 email,
             },
         })
-        return response.data
+        return response.data as UserRemoveResponse
     }
 }
