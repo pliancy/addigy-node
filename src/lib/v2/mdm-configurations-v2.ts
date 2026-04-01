@@ -477,7 +477,7 @@ export class MdmConfigurationsV2 {
                 ...basePayload,
                 payload_type: 'com.apple.MCX',
                 addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.MCX',
-                payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.${groupUUID} `,
+                payload_identifier: `com.addigy.securityAndPrivacy.com.apple.MCX.${groupUUID}`,
                 payload_uuid: randomUUID(),
                 destroy_fv_key_on_standby:
                     filevault.destroyFvKeyOnStandby === undefined
@@ -494,7 +494,7 @@ export class MdmConfigurationsV2 {
                     addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1',
                     payload_type: 'com.apple.security.pkcs1',
                     payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.pkcs1.${groupUUID}`,
-                    payload_uuid: randomUUID(),
+                    payload_uuid: encryptCertPayloadUUID,
                     is_from_security_profile: true,
                 },
                 {
@@ -542,7 +542,7 @@ export class MdmConfigurationsV2 {
                 'com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy',
             payload_type: 'com.apple.TCC.configuration-profile-policy',
             payload_display_name: name,
-            payload_group_id: randomUUID(),
+            payload_group_id: groupUUID,
             payload_version: 1,
             payload_identifier: `com.addigy.TCC.configuration-profile-policy.com.apple.TCC.configuration-profile-policy.${groupUUID}`,
             payload_uuid: randomUUID(),
