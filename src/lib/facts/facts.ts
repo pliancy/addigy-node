@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Urls } from '../addigy.constants'
 import { IAddigyInternalAuthObject } from '../auth/auth.types'
-import { CustomFact } from './facts.types'
+import { CustomFact } from '../v2/v2.types'
 import { getAxiosHttpAgents } from '../addigy.utils'
 
 export class Facts {

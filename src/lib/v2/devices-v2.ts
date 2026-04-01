@@ -5,6 +5,13 @@ import { DeviceAudit, DevicesListResponse, V2ListOptions, V2ListRequestBody } fr
 export class DevicesV2 {
     constructor(private readonly http: AxiosInstance) {}
 
+    /**
+     * Returns device audit records including all collected facts.
+     * Automatically paginates through all pages unless `paginate: false` is passed.
+     *
+     * @param options - Pagination and sort options
+     * @returns Array of `DeviceAudit` objects
+     */
     async list(options?: V2ListOptions): Promise<DeviceAudit[]> {
         const baseRequest: V2ListRequestBody = {}
 
