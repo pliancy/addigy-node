@@ -112,7 +112,9 @@ describe('MdmConfigurationsV2', () => {
             const result = await mdm.updatePayloads(payloads)
 
             expect(result).toEqual(MOCK_DATA)
-            expect(http.put).toHaveBeenCalledWith('/mdm/configurations/profiles/payloads', { payloads })
+            expect(http.put).toHaveBeenCalledWith('/mdm/configurations/profiles/payloads', {
+                payloads,
+            })
         })
     })
 
@@ -147,7 +149,9 @@ describe('MdmConfigurationsV2', () => {
 
     describe('listDefinitions', () => {
         it('calls GET /mdm/configurations/definitions and returns data', async () => {
-            const http = makeHttp({ get: jest.fn().mockResolvedValue({ data: [{ addigy_payload_type: 'com.test' }] }) })
+            const http = makeHttp({
+                get: jest.fn().mockResolvedValue({ data: [{ addigy_payload_type: 'com.test' }] }),
+            })
             const mdm = new MdmConfigurationsV2(http as never)
 
             const result = await mdm.listDefinitions()
@@ -159,7 +163,9 @@ describe('MdmConfigurationsV2', () => {
 
     describe('getDefinition', () => {
         it('calls GET /mdm/configurations/definition/:type and returns data', async () => {
-            const http = makeHttp({ get: jest.fn().mockResolvedValue({ data: { addigy_payload_type: 'com.test' } }) })
+            const http = makeHttp({
+                get: jest.fn().mockResolvedValue({ data: { addigy_payload_type: 'com.test' } }),
+            })
             const mdm = new MdmConfigurationsV2(http as never)
 
             const result = await mdm.getDefinition('com.test.payload')
@@ -171,7 +177,9 @@ describe('MdmConfigurationsV2', () => {
 
     describe('listByPolicyAndType', () => {
         it('calls GET /mdm/configurations/policy/profiles with query params', async () => {
-            const http = makeHttp({ get: jest.fn().mockResolvedValue({ data: [{ payload_group_id: MOCK_UUID }] }) })
+            const http = makeHttp({
+                get: jest.fn().mockResolvedValue({ data: [{ payload_group_id: MOCK_UUID }] }),
+            })
             const mdm = new MdmConfigurationsV2(http as never)
 
             const result = await mdm.listByPolicyAndType('policy-1', 'com.apple.test')
@@ -216,7 +224,9 @@ describe('MdmConfigurationsV2', () => {
 
             const result = await mdm.createKernelExtensionPolicy('Test KEP', true, {
                 allowedTeamIdentifiers: ['TEAM123'],
-                allowedKernelExtensions: [{ teamIdentifier: 'TEAM456', bundleIdentifiers: ['com.test.kext'] }],
+                allowedKernelExtensions: [
+                    { teamIdentifier: 'TEAM456', bundleIdentifiers: ['com.test.kext'] },
+                ],
             })
 
             expect(result).toEqual(MOCK_DATA)
@@ -250,8 +260,12 @@ describe('MdmConfigurationsV2', () => {
 
             const result = await mdm.createSystemExtensionPolicy('Test SEP', false, {
                 allowedTeamIdentifiers: ['TEAM123'],
-                allowedSystemExtensions: [{ teamIdentifier: 'TEAM456', bundleIdentifiers: ['com.test.sysext'] }],
-                allowedSystemExtensionTypes: [{ teamIdentifier: 'TEAM789', bundleIdentifiers: ['driver'] }],
+                allowedSystemExtensions: [
+                    { teamIdentifier: 'TEAM456', bundleIdentifiers: ['com.test.sysext'] },
+                ],
+                allowedSystemExtensionTypes: [
+                    { teamIdentifier: 'TEAM789', bundleIdentifiers: ['driver'] },
+                ],
             })
 
             expect(result).toEqual(MOCK_DATA)
@@ -279,7 +293,10 @@ describe('MdmConfigurationsV2', () => {
                 },
             ]
 
-            const result = await mdm.createNotificationSettingsPolicy('Test Notifications', settings)
+            const result = await mdm.createNotificationSettingsPolicy(
+                'Test Notifications',
+                settings,
+            )
 
             expect(result).toEqual(MOCK_DATA)
             const payload = http.post.mock.calls[0][1].payloads[0]
@@ -355,7 +372,11 @@ describe('MdmConfigurationsV2', () => {
         it('creates filevault policy with two base payloads when escrow is false', async () => {
             const http = makeHttp()
             const mdm = new MdmConfigurationsV2(http as never)
-            const filevault: FilevaultRequest = { enable: true, defer: true, escrowRecoveryKey: false }
+            const filevault: FilevaultRequest = {
+                enable: true,
+                defer: true,
+                escrowRecoveryKey: false,
+            }
 
             const result = await mdm.createFilevaultPolicy('Test FV', filevault)
 
@@ -370,7 +391,11 @@ describe('MdmConfigurationsV2', () => {
         it('adds escrow payloads when escrowRecoveryKey is true', async () => {
             const http = makeHttp()
             const mdm = new MdmConfigurationsV2(http as never)
-            const filevault: FilevaultRequest = { enable: true, defer: false, escrowRecoveryKey: true }
+            const filevault: FilevaultRequest = {
+                enable: true,
+                defer: false,
+                escrowRecoveryKey: true,
+            }
 
             await mdm.createFilevaultPolicy('Test FV Escrow', filevault)
 
@@ -386,7 +411,11 @@ describe('MdmConfigurationsV2', () => {
             const http = makeHttp()
             const mdm = new MdmConfigurationsV2(http as never)
 
-            await mdm.createFilevaultPolicy('Test FV Off', { enable: false, defer: false, escrowRecoveryKey: false })
+            await mdm.createFilevaultPolicy('Test FV Off', {
+                enable: false,
+                defer: false,
+                escrowRecoveryKey: false,
+            })
 
             const payload = http.post.mock.calls[0][1].payloads[0]
             expect(payload.enable).toBe('Off')
@@ -396,7 +425,11 @@ describe('MdmConfigurationsV2', () => {
             const http = makeHttp()
             const mdm = new MdmConfigurationsV2(http as never)
 
-            await mdm.createFilevaultPolicy('Test FV Priority', { enable: true, defer: false, escrowRecoveryKey: false }, 5)
+            await mdm.createFilevaultPolicy(
+                'Test FV Priority',
+                { enable: true, defer: false, escrowRecoveryKey: false },
+                5,
+            )
 
             const payloads = http.post.mock.calls[0][1].payloads
             payloads.forEach((p: any) => expect(p.payload_priority).toBe(5))
@@ -411,7 +444,9 @@ describe('MdmConfigurationsV2', () => {
                 {
                     identifier: 'com.example.app',
                     codeRequirement: 'identifier "com.example.app"',
-                    services: [{ service: 'accessibility', allowed: true, identifierType: 'bundleID' }],
+                    services: [
+                        { service: 'accessibility', allowed: true, identifierType: 'bundleID' },
+                    ],
                 },
             ]
 

@@ -61,7 +61,10 @@ export class SmartSoftwareV2 {
      * @param request - The smart software creation request body
      * @returns The newly created `CustomSoftware` object
      */
-    async create(organizationId: string, request: CreateSmartSoftwareRequest): Promise<CustomSoftware> {
+    async create(
+        organizationId: string,
+        request: CreateSmartSoftwareRequest,
+    ): Promise<CustomSoftware> {
         const response = await this.http.post(
             `/o/${encodeURIComponent(organizationId)}/smart-software`,
             request,
@@ -121,7 +124,11 @@ export class SmartSoftwareV2 {
      * @param policyId - The policy ID to remove the software from
      * @param assetId - The smart software item ID
      */
-    async unassignFromPolicy(organizationId: string, policyId: string, assetId: string): Promise<void> {
+    async unassignFromPolicy(
+        organizationId: string,
+        policyId: string,
+        assetId: string,
+    ): Promise<void> {
         await this.http.delete(
             `/o/${encodeURIComponent(organizationId)}/policies/${encodeURIComponent(policyId)}/smart-software/${encodeURIComponent(assetId)}`,
         )

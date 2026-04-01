@@ -95,9 +95,12 @@ export class MdmConfigurationsV2 {
         const form = new FormData()
         const blob = new Blob([profile], { type: 'application/x-apple-aspen-config' })
         form.append('profile', blob, 'profile.mobileconfig')
-        if (options?.ios_minimum_version) form.append('ios_minimum_version', options.ios_minimum_version)
-        if (options?.macos_minimum_version) form.append('macos_minimum_version', options.macos_minimum_version)
-        if (options?.tvos_minimum_version) form.append('tvos_minimum_version', options.tvos_minimum_version)
+        if (options?.ios_minimum_version)
+            form.append('ios_minimum_version', options.ios_minimum_version)
+        if (options?.macos_minimum_version)
+            form.append('macos_minimum_version', options.macos_minimum_version)
+        if (options?.tvos_minimum_version)
+            form.append('tvos_minimum_version', options.tvos_minimum_version)
 
         const response = await this.http.post('/mdm/configurations/custom-profile', form, {
             headers: { 'content-type': undefined },
@@ -138,7 +141,9 @@ export class MdmConfigurationsV2 {
      */
     async unassignPolicies(groupId: string, policyIds: string[]): Promise<string> {
         const body: AssignMdmPoliciesRequest = { groupId, policyIds }
-        const response = await this.http.delete('/mdm/configurations/profile/policies', { data: body })
+        const response = await this.http.delete('/mdm/configurations/profile/policies', {
+            data: body,
+        })
         return response.data as string
     }
 
@@ -486,8 +491,7 @@ export class MdmConfigurationsV2 {
             payloads.push(
                 {
                     ...basePayload,
-                    addigy_payload_type:
-                        'com.addigy.securityAndPrivacy.com.apple.security.pkcs1',
+                    addigy_payload_type: 'com.addigy.securityAndPrivacy.com.apple.security.pkcs1',
                     payload_type: 'com.apple.security.pkcs1',
                     payload_identifier: `com.addigy.securityAndPrivacy.com.apple.security.pkcs1.${groupUUID}`,
                     payload_uuid: randomUUID(),
@@ -631,7 +635,9 @@ export class MdmConfigurationsV2 {
      * @param mdmProfile - A single `MdmPayloadRequest` or an array of them
      * @returns The created `MdmConfigurationPayloads`
      */
-    async createMdmProfile(mdmProfile: MdmPayloadRequest | MdmPayloadRequest[]): Promise<MdmConfigurationPayloads> {
+    async createMdmProfile(
+        mdmProfile: MdmPayloadRequest | MdmPayloadRequest[],
+    ): Promise<MdmConfigurationPayloads> {
         const payloads = Array.isArray(mdmProfile) ? mdmProfile : [mdmProfile]
         return this.create(payloads)
     }

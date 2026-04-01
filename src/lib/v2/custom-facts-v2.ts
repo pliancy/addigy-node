@@ -75,7 +75,10 @@ export class CustomFactsV2 {
      * @param request - The custom fact creation request body
      * @returns `CreateCustomFactResponse` containing both the `fact` and `instruction` objects
      */
-    async create(organizationId: string, request: CreateCustomFactRequest): Promise<CreateCustomFactResponse> {
+    async create(
+        organizationId: string,
+        request: CreateCustomFactRequest,
+    ): Promise<CreateCustomFactResponse> {
         const response = await this.http.post(
             `/o/${encodeURIComponent(organizationId)}/facts/custom`,
             request,
@@ -90,10 +93,7 @@ export class CustomFactsV2 {
      * @param request - The update request body, must include the fact `id`
      */
     async update(organizationId: string, request: UpdateCustomFactRequest): Promise<void> {
-        await this.http.put(
-            `/o/${encodeURIComponent(organizationId)}/facts/custom`,
-            request,
-        )
+        await this.http.put(`/o/${encodeURIComponent(organizationId)}/facts/custom`, request)
     }
 
     /**
@@ -103,10 +103,9 @@ export class CustomFactsV2 {
      * @param id - The custom fact ID to delete
      */
     async delete(organizationId: string, id: string): Promise<void> {
-        await this.http.delete(
-            `/o/${encodeURIComponent(organizationId)}/facts/custom`,
-            { params: { id } },
-        )
+        await this.http.delete(`/o/${encodeURIComponent(organizationId)}/facts/custom`, {
+            params: { id },
+        })
     }
 
     /**
@@ -137,9 +136,8 @@ export class CustomFactsV2 {
      * @param policyId - The policy ID to remove the fact from
      */
     async unassignPolicy(organizationId: string, id: string, policyId: string): Promise<void> {
-        await this.http.delete(
-            `/o/${encodeURIComponent(organizationId)}/facts/custom/policy`,
-            { params: { id, policy_id: policyId } },
-        )
+        await this.http.delete(`/o/${encodeURIComponent(organizationId)}/facts/custom/policy`, {
+            params: { id, policy_id: policyId },
+        })
     }
 }
