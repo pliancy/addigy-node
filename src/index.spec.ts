@@ -32,7 +32,7 @@ describe('IndexBarrel', () => {
                 const fileWithoutExt = file.replace('.ts', '')
 
                 // get class name (e.g., mdm-configurations => mdmconfigurations)
-                const cls = fileWithoutExt.replace('-', '')
+                const cls = fileWithoutExt.replace(/-/g, '')
 
                 // ensure all types and classes are exported
                 if (/\.types/.test(file)) {

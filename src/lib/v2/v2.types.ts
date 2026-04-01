@@ -335,3 +335,279 @@ export interface UserUpdateRequest {
 export type UserUpdateResponse = Record<string, unknown>
 
 export type UserRemoveResponse = Record<string, unknown>
+
+// MDM Configuration Profile types
+
+export interface MdmPayloadRequest {
+    payload_display_name: string
+    payload_type: string
+    payload_priority?: number
+    [key: string]: unknown
+}
+
+export interface MdmPayloadResult {
+    addigy_payload_type?: string
+    addigy_payload_version?: number
+    payload_display_name?: string
+    payload_enabled?: boolean
+    payload_group_id?: string
+    payload_identifier?: string
+    payload_priority?: number
+    payload_type?: string
+    payload_uuid?: string
+    payload_version?: number
+    policy_restricted?: boolean
+    requires_device_supervision?: boolean
+    requires_mdm_profile_approved?: boolean
+    supported_os_versions?: Record<string, string>
+    [key: string]: unknown
+}
+
+export interface MdmPolicyPayloadAssignment {
+    orgid?: string
+    configuration_id?: string
+    policy_id?: string
+}
+
+export interface MdmConfigurationPayloads {
+    payloads?: MdmPayloadResult[]
+    staged_payloads?: MdmPayloadResult[]
+    policies_mdm_payloads?: MdmPolicyPayloadAssignment[]
+}
+
+export interface MdmPayloadManifestKey {
+    key_name?: string
+    key_type?: string
+    key_description?: string
+    key_required?: boolean
+    key_default_value?: unknown
+}
+
+export interface MdmPayloadManifest {
+    addigy_payload_type?: string
+    payload_type?: string
+    payload_name?: string
+    payload_description?: string
+    payload_object?: string
+    has_manifest?: boolean
+    keys?: MdmPayloadManifestKey[]
+    supported_os_versions?: Record<string, string>[]
+}
+
+export interface AssignMdmPoliciesRequest {
+    groupId: string
+    policyIds: string[]
+}
+
+export interface MdmPayloadsQueryRequest {
+    payload_group_ids?: string[]
+    excluded_payload_group_ids?: string[]
+}
+
+export interface CreateCustomProfileOptions {
+    ios_minimum_version?: string
+    macos_minimum_version?: string
+    tvos_minimum_version?: string
+}
+
+// Smart Software types
+
+export interface SmartSoftwareFilter {
+    archived?: boolean
+    excluded_ids?: string[]
+    identifier?: string
+    ids?: string[]
+    name_contains?: string
+}
+
+export interface SmartSoftwareListOptions extends V2ListOptions {
+    filter?: SmartSoftwareFilter
+}
+
+export interface SmartSoftwareDownloadRequest {
+    id: string
+}
+
+export interface SmartSoftwareSoftwareIconRequest {
+    id: string
+    provider: 'cloud-storage' | 'web'
+}
+
+export interface CreateSmartSoftwareRequest {
+    base_identifier: string
+    version: string
+    archived?: boolean
+    category?: string
+    condition?: string
+    description?: string
+    downloads?: SmartSoftwareDownloadRequest[]
+    identifier?: string
+    installation_script?: string
+    priority?: number
+    remove_script?: string
+    run_on_success?: string
+    software_icon?: SmartSoftwareSoftwareIconRequest
+    status_on_skipped?: 'finished' | 'failed'
+    user_email?: string
+}
+
+export interface UpdateSmartSoftwareRequest {
+    archived?: boolean
+    base_identifier?: string
+    category?: string
+    condition?: string
+    description?: string
+    downloads?: SmartSoftwareDownloadRequest[]
+    identifier?: string
+    installation_script?: string
+    name?: string
+    priority?: number
+    remove_script?: string
+    run_on_success?: string
+    software_icon?: SmartSoftwareSoftwareIconRequest
+    status_on_skipped?: 'finished' | 'failed'
+    user_email?: string
+    version?: string
+}
+
+export interface CustomSoftwareDownload {
+    content_type?: string
+    created?: string
+    file_path?: string
+    filename?: string
+    id?: string
+    md5_hash?: string
+    provider?: string
+    size?: number
+    user_email?: string
+}
+
+export interface CustomSoftware {
+    archived?: boolean
+    base_identifier?: string
+    category?: string
+    condition?: string
+    description?: string
+    downloads?: CustomSoftwareDownload[]
+    fact_identifier?: string
+    identifier?: string
+    install?: boolean
+    installation_script?: string
+    instruction_id?: string
+    is_onboarding_config?: boolean
+    label?: string
+    name?: string
+    organization_id?: string
+    policy_restricted?: boolean
+    priority?: number
+    provider?: string
+    public?: boolean
+    remove_script?: string
+    run_on_success?: string
+    set_group_name?: string
+    software_icon?: CustomSoftwareDownload
+    status_on_skipped?: string
+    tcc_version?: number
+    type?: string
+    user_email?: string
+    version?: unknown
+}
+
+export type SmartSoftwareListResponse = V2PaginatedResponse<CustomSoftware>
+
+// Custom Facts types
+
+export interface CustomFactOSArchitecture {
+    is_supported?: boolean
+    language?: string
+    md5_hash?: string
+    script?: string
+    shebang?: string
+}
+
+export interface CustomFactOSArchitectures {
+    darwin_amd64?: CustomFactOSArchitecture
+    linux_arm?: CustomFactOSArchitecture
+    macOS?: CustomFactOSArchitecture
+    linux?: CustomFactOSArchitecture
+}
+
+export interface CustomFact {
+    identifier?: string
+    instruction_id?: string
+    name?: string
+    notes?: string
+    orgid?: string
+    provider?: string
+    return_type?: string
+    source?: string
+    version?: number
+    community_fact_id?: string
+    community_version?: number
+    os_architectures?: CustomFactOSArchitectures
+}
+
+export interface CreateCustomFactRequest {
+    name: string
+    return_type: string
+    notes?: string
+    os_architectures?: CustomFactOSArchitectures
+}
+
+export interface UpdateCustomFactRequest {
+    id: string
+    name?: string
+    return_type?: string
+    notes?: string
+    os_architectures?: CustomFactOSArchitectures
+}
+
+export interface CustomFactInstruction {
+    condition?: string
+    identifier?: string
+    instruction_id?: string
+    label?: string
+    name?: string
+    policy_restricted?: boolean
+    provider?: string
+    public?: boolean
+    remove_script?: string
+    run_on_success?: boolean
+    status_on_skipped?: string
+    user_email?: string
+}
+
+export interface CreateCustomFactResponse {
+    fact?: CustomFact
+    instruction?: CustomFactInstruction
+}
+
+export interface CustomFactsFilter {
+    ids?: string[]
+    name_contains?: string
+}
+
+export interface CustomFactsListOptions extends V2ListOptions {
+    filter?: CustomFactsFilter
+}
+
+export type CustomFactsListResponse = V2PaginatedResponse<CustomFact>
+
+export interface CustomFactUsageItem {
+    id?: string
+    name?: string
+    parent_id?: string
+}
+
+export interface CustomFactUsage {
+    alerts?: CustomFactUsageItem[]
+    integrations?: CustomFactUsageItem[]
+    policies?: CustomFactUsageItem[]
+    reports?: CustomFactUsageItem[]
+    user_configs?: CustomFactUsageItem[]
+}
+
+export interface AssignCustomFactToPoliciesResponse {
+    succeeded?: string[]
+    failed?: string[]
+}

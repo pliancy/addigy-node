@@ -10,6 +10,13 @@ import {
 export class CertsV2 {
     constructor(private readonly http: AxiosInstance) {}
 
+    /**
+     * Returns all installed MDM certificates across devices.
+     * Automatically paginates through all pages unless `paginate: false` is passed.
+     *
+     * @param options - Pagination and sort options
+     * @returns Array of `InstalledCertificate` objects
+     */
     async list(options?: V2ListOptions): Promise<InstalledCertificate[]> {
         const baseRequest: V2ListRequestBody = {}
 
