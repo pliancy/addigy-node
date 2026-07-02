@@ -5,6 +5,13 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  id-token: write # required for OIDC
+  # required for semantic-release
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   release:
     name: Release
@@ -26,7 +33,6 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         # Run semantic release and copy updated package.json back to the root of the repo.
         run: |
           yarn semantic-release

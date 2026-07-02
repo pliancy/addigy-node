@@ -4,6 +4,7 @@ import { CertsV2 } from './certs-v2'
 import { DevicesV2 } from './devices-v2'
 import { PoliciesV2 } from './policies-v2'
 import { UsersV2 } from './users-v2'
+import { VariablesV2 } from './variables-v2'
 
 describe('AddigyV2', () => {
     beforeEach(() => {
@@ -22,6 +23,16 @@ describe('AddigyV2', () => {
         expect(axiosInstance.defaults.httpsAgent).toBeInstanceOf(HttpsCookieAgent)
     })
 
+    it('creates an internal API-key Axios instance for internal v2 routes', () => {
+        const addigyV2 = new AddigyV2({ apiKey: 'test-key' })
+        const axiosInstance = addigyV2['internalHttp']
+
+        expect(axiosInstance.defaults.baseURL).toEqual('https://prod.addigy.com/api/v2')
+        expect(axiosInstance.defaults.headers['x-api-key']).toBe('test-key')
+        expect(axiosInstance.defaults.httpAgent).toBeInstanceOf(HttpCookieAgent)
+        expect(axiosInstance.defaults.httpsAgent).toBeInstanceOf(HttpsCookieAgent)
+    })
+
     it('creates expected v2 dependencies', () => {
         const addigyV2 = new AddigyV2({ apiKey: 'test-key' })
 
@@ -29,5 +40,6 @@ describe('AddigyV2', () => {
         expect(addigyV2.devices).toBeInstanceOf(DevicesV2)
         expect(addigyV2.policies).toBeInstanceOf(PoliciesV2)
         expect(addigyV2.users).toBeInstanceOf(UsersV2)
+        expect(addigyV2.variables).toBeInstanceOf(VariablesV2)
     })
 })

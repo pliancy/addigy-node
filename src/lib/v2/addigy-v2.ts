@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
+import { Urls } from '../addigy.constants'
 import { getAxiosHttpAgents } from '../addigy.utils'
 import { CertsV2 } from './certs-v2'
 import { CustomFactsV2 } from './custom-facts-v2'
@@ -8,6 +9,7 @@ import { PoliciesV2 } from './policies-v2'
 import { SmartSoftwareV2 } from './smart-software-v2'
 import { IAddigyV2Config } from './v2.types'
 import { UsersV2 } from './users-v2'
+import { VariablesV2 } from './variables-v2'
 
 export class AddigyV2 {
     certs: CertsV2
@@ -24,7 +26,11 @@ export class AddigyV2 {
 
     users: UsersV2
 
+    variables: VariablesV2
+
     private readonly http: AxiosInstance
+
+    private readonly internalHttp: AxiosInstance
 
     constructor(private readonly config: IAddigyV2Config) {
         this.http = axios.create({
@@ -37,12 +43,23 @@ export class AddigyV2 {
             },
         })
 
+        this.internalHttp = axios.create({
+            baseURL: `${Urls.api}/api/v2`,
+            ...getAxiosHttpAgents(),
+            headers: {
+                'content-type': 'application/json',
+                accept: 'application/json',
+                'x-api-key': this.config.apiKey,
+            },
+        })
+
         this.certs = new CertsV2(this.http)
         this.customFacts = new CustomFactsV2(this.http)
         this.devices = new DevicesV2(this.http)
         this.mdmConfigurations = new MdmConfigurationsV2(this.http)
-        this.policies = new PoliciesV2(this.http)
+        this.policies = new PoliciesV2(this.http, this.internalHttp)
         this.smartSoftware = new SmartSoftwareV2(this.http)
         this.users = new UsersV2(this.http)
+        this.variables = new VariablesV2(this.http)
     }
 }
