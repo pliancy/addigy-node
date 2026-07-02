@@ -15,6 +15,7 @@
   "devDependencies": {
     "@pliancy/eslint-config-ts": "1.1.1",
     "@pliancy/semantic-release-config-npm": "2.5.0",
+    "@semantic-release/git": "10.0.1",
     "@types/jest": "30.0.0",
     "@types/node": "22.13.9",
     "commitizen": "4.3.2",
