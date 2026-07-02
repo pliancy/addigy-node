@@ -284,6 +284,7 @@ export interface V2Policy {
     color?: string
     icon?: string
     parent?: string
+    instructions?: string[]
     [key: string]: unknown
 }
 
@@ -611,3 +612,65 @@ export interface AssignCustomFactToPoliciesResponse {
     succeeded?: string[]
     failed?: string[]
 }
+
+// Variable types
+
+export type VariableType = 'string' | 'secret'
+
+export interface VariableFilter {
+    key_contains?: string
+    keys?: string[]
+}
+
+export interface VariablesListOptions extends V2ListOptions {
+    filter?: VariableFilter
+}
+
+export interface NewVariableRequest {
+    key: string
+    type: VariableType
+    default_value?: unknown
+}
+
+export interface VariableUpdateRequest {
+    key: string
+    default_value?: unknown
+}
+
+export interface PolicyValue {
+    policy_id: string
+    value: unknown
+}
+
+export interface Variable {
+    created_date?: string
+    default_value?: unknown
+    key?: string
+    type?: string
+    updated_date?: string
+}
+
+export interface VariablePolicies {
+    policy_values: PolicyValue[]
+    updated_date?: string
+    variable_key: string
+}
+
+export interface VariablePolicy {
+    policy_id: string
+    value: unknown
+    variable_key: string
+}
+
+export interface VariableValueResponse {
+    value?: unknown
+}
+
+export interface AssetVariableUsage {
+    asset_ids?: string[]
+    asset_type?: string
+    organization_id?: string
+    variable_key?: string
+}
+
+export type VariablesListResponse = V2PaginatedResponse<Variable>

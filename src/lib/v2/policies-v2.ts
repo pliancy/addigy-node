@@ -2,7 +2,10 @@ import { AxiosInstance } from 'axios'
 import { CreatePolicyRequest, PoliciesListResponse, V2Policy } from './v2.types'
 
 export class PoliciesV2 {
-    constructor(private readonly http: AxiosInstance) {}
+    constructor(
+        private readonly http: AxiosInstance,
+        private readonly internalHttp: AxiosInstance,
+    ) {}
 
     /**
      * Returns all policies, or a filtered subset by policy ID.
@@ -20,6 +23,22 @@ export class PoliciesV2 {
         }
 
         return responseData.items ?? []
+    }
+
+    /**
+     * Fetches one policy from Addigy's internal policy detail endpoint.
+     *
+     * This endpoint returns the policy's authoritative instruction IDs. The list endpoint can
+     * return a stale or summary instruction list.
+     *
+     * @param policyId - Policy ID to fetch
+     * @returns The detailed `V2Policy` object
+     */
+    async get(policyId: string): Promise<V2Policy> {
+        const response = await this.internalHttp.get(
+            `/policies/${encodeURIComponent(policyId)}`,
+        )
+        return response.data as V2Policy
     }
 
     /**
