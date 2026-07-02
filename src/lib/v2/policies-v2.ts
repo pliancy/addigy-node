@@ -35,9 +35,7 @@ export class PoliciesV2 {
      * @returns The detailed `V2Policy` object
      */
     async get(policyId: string): Promise<V2Policy> {
-        const response = await this.internalHttp.get(
-            `/policies/${encodeURIComponent(policyId)}`,
-        )
+        const response = await this.internalHttp.get(`/policies/${encodeURIComponent(policyId)}`)
         return response.data as V2Policy
     }
 

@@ -123,10 +123,7 @@ export class VariablesV2 {
      * @param request - The policy value assignment request body
      */
     async assignPolicyValue(organizationId: string, request: VariablePolicy): Promise<void> {
-        await this.http.post(
-            `/o/${encodeURIComponent(organizationId)}/variables/policies`,
-            request,
-        )
+        await this.http.post(`/o/${encodeURIComponent(organizationId)}/variables/policies`, request)
     }
 
     /**
