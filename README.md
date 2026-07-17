@@ -2,7 +2,7 @@
 
 # Addigy API SDK for Node.JS
 
-This package takes the Addigy public API and wraps it into a consistent promise-based interface.
+This package takes the Addigy's v1 public API and wraps it into a consistent promise-based interface.
 
 :warning: Use this at your own risk. To error is human, to propogate error across all of prod via API is DevOps.
 
@@ -30,7 +30,7 @@ const addigy = new Addigy({
 From there, you can call any of the `addigy` package functions (all of which are Promise-based) using `await` or with `=>` notation:
 
 ```js
-const policies = await addigy.getPolicies()
+const policies = await addigy.policies.getPolicies()
 ```
 
 The response will be a JSON object or array, like so:
