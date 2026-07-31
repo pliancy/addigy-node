@@ -446,7 +446,7 @@ export interface CreateSmartSoftwareRequest {
     installation_script?: string
     priority?: number
     remove_script?: string
-    run_on_success?: string
+    run_on_success?: boolean
     software_icon?: SmartSoftwareSoftwareIconRequest
     status_on_skipped?: 'finished' | 'failed'
     user_email?: string
@@ -464,7 +464,7 @@ export interface UpdateSmartSoftwareRequest {
     name?: string
     priority?: number
     remove_script?: string
-    run_on_success?: string
+    run_on_success?: boolean
     software_icon?: SmartSoftwareSoftwareIconRequest
     status_on_skipped?: 'finished' | 'failed'
     user_email?: string
@@ -504,7 +504,7 @@ export interface CustomSoftware {
     provider?: string
     public?: boolean
     remove_script?: string
-    run_on_success?: string
+    run_on_success?: boolean
     set_group_name?: string
     software_icon?: CustomSoftwareDownload
     status_on_skipped?: string
