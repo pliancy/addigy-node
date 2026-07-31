@@ -1950,12 +1950,12 @@ acorn@^8.9.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.10.0.tgz#8be5b3907a67221a81ab23c7889c4c5526b62ec5"
   integrity sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==
 
-agent-base@9.0.0:
+agent-base@9.0.0, agent-base@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-9.0.0.tgz#ec9efb08314e1e75b0852d74aabf9a387f99834e"
   integrity sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==
 
-agent-base@^7.1.0, agent-base@^7.1.2, agent-base@^7.1.4:
+agent-base@^7.1.0, agent-base@^7.1.2:
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-7.1.4.tgz#e3cd76d4c548ee895d3c3fd8dc1f6c5b9032e7a8"
   integrity sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==
@@ -3925,12 +3925,12 @@ http-cache-semantics@^4.1.1:
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.2.0.tgz#205f4db64f8562b76a4ff9235aa5279839a09dd5"
   integrity sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==
 
-http-cookie-agent@7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/http-cookie-agent/-/http-cookie-agent-7.0.3.tgz#02d342cdfb89d61369f61595b5b5124b4315a66f"
-  integrity sha512-EeZo7CGhfqPW6R006rJa4QtZZUpBygDa2HZH3DJqsTzTjyRE6foDBVQIv/pjVsxHC8z2GIdbB1Hvn9SRorP3WQ==
+http-cookie-agent@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/http-cookie-agent/-/http-cookie-agent-8.0.0.tgz#0dd008b3e9f854176885a838776b9dd7d56eb889"
+  integrity sha512-c5A2W4NXYRQR+ZOEA+nzLlWj0K7zXAG21UZaDKfZrFSlmmb1MMXBVDhQJNUNYkYJZwFi0ptlNu4r37tEM45tvg==
   dependencies:
-    agent-base "^7.1.4"
+    agent-base "^9.0.0"
 
 http-proxy-agent@^7.0.0:
   version "7.0.2"
