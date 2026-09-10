@@ -59,7 +59,7 @@
   "types": "index.d.ts",
   "version": "2.13.1",
   "volta": {
-    "node": "22.14.0",
+    "node": "24.21.0",
     "yarn": "1.22.22"
   }
 }
