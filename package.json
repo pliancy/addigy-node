@@ -8,7 +8,7 @@
   "dependencies": {
     "@expo/plist": "0.5.2",
     "axios": "1.13.6",
-    "http-cookie-agent": "7.0.3",
+    "http-cookie-agent": "8.0.0",
     "tough-cookie": "6.0.0"
   },
   "description": "",
